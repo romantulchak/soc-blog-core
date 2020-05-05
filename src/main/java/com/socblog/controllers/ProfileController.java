@@ -4,10 +4,15 @@ import com.socblog.dto.UserDTO;
 import com.socblog.models.User;
 import com.socblog.services.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,5 +33,17 @@ public class ProfileController {
     public UserDTO getUserData(@PathVariable("userId") Long userId){
         return profileService.getDataForUser(userId);
     }
+
+
+    @PutMapping("/setAvatar/{userId}")
+    public ResponseEntity<?> setAvatar(@RequestBody String image, @PathVariable("userId") User user) throws IOException {
+        return profileService.setUserAvatar(image, user);
+    }
+
+    @PutMapping("/updateUserData")
+    public ResponseEntity<?> updateUserData(@RequestBody User user){
+        return profileService.updateUserData(user);
+    }
+
 
 }
