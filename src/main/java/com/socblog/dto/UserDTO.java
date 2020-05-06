@@ -1,25 +1,59 @@
 package com.socblog.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.models.Post;
+import com.socblog.models.User;
+import com.socblog.models.Views;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class UserDTO {
+
+    @JsonView(Views.UserFull.class)
     private Long id;
+
+    @JsonView(Views.UserFull.class)
     private String username;
+
+    @JsonView(Views.UserFull.class)
     private String email;
+
+    @JsonView(Views.UserFull.class)
     private Boolean isNew;
+
+    @JsonView(Views.UserFull.class)
     private String firstName;
+
+    @JsonView(Views.UserFull.class)
     private String lastName;
+
+    @JsonView(Views.UserFull.class)
     private String city;
+
+    @JsonView(Views.UserFull.class)
     private LocalDate birthDay;
+
+    @JsonView(Views.UserFull.class)
     private String avatar;
+
+    @JsonView(Views.UserFull.class)
     private String country;
+
+    @JsonView(Views.UserFull.class)
     private String placeOfWork;
+
+    @JsonView(Views.UserFull.class)
     private String gender;
+
+    @JsonView(Views.UserFull.class)
+    private List<Post> posts;
+
     public UserDTO(){
 
     }
 
-    public UserDTO(Long id, String username, String email, Boolean isNew, String firstName, String lastName, String city, LocalDate birthDay, String avatar, String country, String placeOfWork, String gender) {
+    public UserDTO(Long id, String username, String email, Boolean isNew, String firstName, String lastName, String city, LocalDate birthDay, String avatar, String country, String placeOfWork, String gender, List<Post> posts) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -32,8 +66,25 @@ public class UserDTO {
         this.country = country;
         this.placeOfWork = placeOfWork;
         this.gender = gender;
+        this.posts = posts;
+
     }
 
+    public UserDTO(User user){
+        this.id = user.getId();
+        this.username =user.getUsername();
+        this.email = user.getEmail();
+        this.isNew = user.getNew();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.city = user.getCity();
+        this.birthDay = user.getBirthDay();
+        this.avatar = user.getAvatar();
+        this.country = user.getCountry();
+        this.placeOfWork = user.getPlaceOfWork();
+        this.gender = user.getGender();
+        this.posts = user.getPosts();
+    }
 
 
 
@@ -131,5 +182,13 @@ public class UserDTO {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

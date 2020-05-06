@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,7 +35,7 @@ public class ProfileServiceImpl implements ProfileService {
     public UserDTO getDataForUser(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user != null) {
-            return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getNew(), user.getFirstName(), user.getLastName(), user.getCity(), user.getBirthDay(), user.getAvatar(), user.getCountry(), user.getPlaceOfWork(), user.getGender());
+            return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getNew(), user.getFirstName(), user.getLastName(), user.getCity(), user.getBirthDay(), user.getAvatar(), user.getCountry(), user.getPlaceOfWork(), user.getGender(), user.getPosts());
         }
         return null;
     }
@@ -60,5 +61,13 @@ public class ProfileServiceImpl implements ProfileService {
         user.setPassword(userFromDb.getPassword());
         userRepo.save(user);
         return new ResponseEntity<>("User data was updated", HttpStatus.OK);
+    }
+
+
+    public List<UserDTO>users(){
+      return userRepo.users();
+    }
+    public UserDTO userById(User user){
+        return new UserDTO(user);
     }
 }

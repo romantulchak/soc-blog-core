@@ -1,11 +1,14 @@
 package com.socblog.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,15 +21,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.UserFull.class)
     private long id;
 
     @NotBlank
     @Size(max = 25, min = 3)
+    @JsonView(Views.UserFull.class)
     private String username;
 
     @NotBlank
     @Email
     @Size(max = 50)
+    @JsonView(Views.UserFull.class)
     private String email;
 
     @NotBlank
@@ -38,22 +44,44 @@ public class User {
                 joinColumns = @JoinColumn(name ="user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonView(Views.UserFull.class)
     private Set<Role> roles = new HashSet<>();
 
+
+    @JsonView(Views.UserFull.class)
     private Boolean isNew = true;
 
+    @JsonView(Views.UserFull.class)
     private String city;
 
+
+    @JsonView(Views.UserFull.class)
     @NotBlank
     private String firstName;
 
+    @JsonView(Views.UserFull.class)
     @NotBlank
     private String lastName;
+
+    @JsonView(Views.UserFull.class)
     private LocalDate birthDay;
+
+    @JsonView(Views.UserFull.class)
     private String country;
+
+    @JsonView(Views.UserFull.class)
     private String avatar;
+
+    @JsonView(Views.UserFull.class)
     private String placeOfWork;
+
+    @JsonView(Views.UserFull.class)
     private String gender;
+
+    @OneToMany(mappedBy = "user")
+    @JsonView(Views.UserFull.class)
+    private List<Post> posts;
+
 
     public User() {
     }
@@ -175,5 +203,12 @@ public class User {
     public void setGender(String gender) {
         this.gender = gender;
     }
-    
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
 }
