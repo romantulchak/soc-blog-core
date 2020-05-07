@@ -21,7 +21,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private long id;
 
     @NotBlank
@@ -44,43 +44,62 @@ public class User {
                 joinColumns = @JoinColumn(name ="user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.UserSubscribeFull.class})
     private Set<Role> roles = new HashSet<>();
 
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private Boolean isNew = true;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String city;
 
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     @NotBlank
     private String firstName;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     @NotBlank
     private String lastName;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private LocalDate birthDay;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String country;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String avatar;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String placeOfWork;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String gender;
 
     @OneToMany(mappedBy = "user")
     @JsonView(Views.UserFull.class)
     private List<Post> posts;
+
+    @ManyToMany
+    @JoinTable(
+            name="user_subscribtion",
+            joinColumns = @JoinColumn(name="channel_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
+    )
+
+    private Set<User> subscribers = new HashSet<>();
+
+
+    @ManyToMany
+    @JoinTable(
+            name="user_subscribtion",
+            joinColumns = @JoinColumn(name="subscriber_id"),
+            inverseJoinColumns = @JoinColumn(name = "channel_id")
+    )
+
+    private Set<User> subscriptions = new HashSet<>();
 
 
     public User() {
@@ -210,5 +229,21 @@ public class User {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public Set<User> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<User> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
     }
 }

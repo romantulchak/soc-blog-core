@@ -4,10 +4,12 @@ import com.socblog.dto.UserDTO;
 import com.socblog.models.User;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.ProfileService;
+import com.socblog.sockets.PostMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +18,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -26,16 +30,20 @@ public class ProfileServiceImpl implements ProfileService {
     private UserRepo userRepo;
     @Value("${upload.path}")
     private String uploadPath;
+
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @Autowired
-    public ProfileServiceImpl(UserRepo userRepo){
+    public ProfileServiceImpl(UserRepo userRepo, SimpMessagingTemplate simpMessagingTemplate){
         this.userRepo = userRepo;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Override
-    public UserDTO getDataForUser(Long userId) {
+    public UserDTO getDataForUser(Long userId ) {
         User user = userRepo.findById(userId).orElse(null);
         if (user != null) {
-            return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getNew(), user.getFirstName(), user.getLastName(), user.getCity(), user.getBirthDay(), user.getAvatar(), user.getCountry(), user.getPlaceOfWork(), user.getGender(), user.getPosts());
+            return new UserDTO(user);
         }
         return null;
     }
@@ -63,11 +71,48 @@ public class ProfileServiceImpl implements ProfileService {
         return new ResponseEntity<>("User data was updated", HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<?> startFollowing(User user, User currentUser) {
+        if(user != null && currentUser != null) {
+            currentUser.getSubscriptions().add(user);
+            userRepo.save(currentUser);
+            this.simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("startFollowing", user.getId(), currentUser.getId()));
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+
+        }
+        return new ResponseEntity<>("Something wrong!", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> stopFollowing(User user, User currentUser) {
+        if (user != null && currentUser != null){
+            currentUser.getSubscriptions().remove(user);
+            userRepo.save(currentUser);
+            this.simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("startFollowing", user.getId(), currentUser.getId()));
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Something wrong!", HttpStatus.OK);
+    }
+
+    @Override
+    public List<UserDTO> getSubscriptions(User user, User currentUser) {
+      List<UserDTO> users = new ArrayList<>();
+      List<User> usersFromBd = userRepo.findAllBySubscriptions(user);
+      usersFromBd.forEach(e->{
+        UserDTO userDTO = new UserDTO(e, currentUser);
+        users.add(userDTO);
+      });
+        return users;
+    }
+
 
     public List<UserDTO>users(){
       return userRepo.users();
     }
-    public UserDTO userById(User user){
-        return new UserDTO(user);
+    public UserDTO userById(User user, User userInSystem){
+        System.out.println(user + " " + userInSystem);
+
+        return new UserDTO(user, userInSystem);
     }
 }

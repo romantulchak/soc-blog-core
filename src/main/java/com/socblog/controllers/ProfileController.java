@@ -53,10 +53,24 @@ public class ProfileController {
         return profileService.users();
     }
 
-    @GetMapping("/userById/{userId}")
+    @GetMapping("/userById/{userId}/{currentUserById}")
     @JsonView(Views.UserFull.class)
-    public UserDTO userById(@PathVariable("userId") User user){
-        return profileService.userById(user);
+    public UserDTO userById(@PathVariable("userId") User user, @PathVariable("currentUserById") User userInSystem){
+        return profileService.userById(user,userInSystem);
     }
 
+    @PutMapping("/startFollowing/{userId}/{currentUserById}")
+    public ResponseEntity<?> startFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
+        return profileService.startFollowing(user, currentUser);
+    }
+    @PutMapping("/stopFollowing/{userId}/{currentUserById}")
+    public ResponseEntity<?> stopFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
+        return profileService.stopFollowing(user, currentUser);
+    }
+
+    @GetMapping("/subscriptions/{userId}/{currentUser}")
+    @JsonView(Views.UserSubscribeFull.class)
+    public List<UserDTO> getSubscriptions(@PathVariable("userId") User user, @PathVariable("currentUser") User currentUser){
+        return profileService.getSubscriptions(user, currentUser);
+    }
 }
