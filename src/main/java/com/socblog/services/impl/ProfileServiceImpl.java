@@ -1,7 +1,13 @@
 package com.socblog.services.impl;
 
+import com.socblog.dto.NotificationBoxDTO;
+import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
+import com.socblog.models.Notification;
+import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
+import com.socblog.repo.NotificationBoxRepo;
+import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
@@ -27,16 +33,23 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
+    private NotificationBoxRepo notificationBoxRepo;
+    private NotificationRepo notificationRepo;
+
     private UserRepo userRepo;
     @Value("${upload.path}")
     private String uploadPath;
 
+
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public ProfileServiceImpl(UserRepo userRepo, SimpMessagingTemplate simpMessagingTemplate){
+    public ProfileServiceImpl(UserRepo userRepo, SimpMessagingTemplate simpMessagingTemplate, NotificationBoxRepo notificationBoxRepo, NotificationRepo notificationRepo){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.notificationBoxRepo = notificationBoxRepo;
+        this.notificationRepo = notificationRepo;
+
     }
 
     @Override
@@ -100,10 +113,24 @@ public class ProfileServiceImpl implements ProfileService {
       List<UserDTO> users = new ArrayList<>();
       List<User> usersFromBd = userRepo.findAllBySubscriptions(user);
       usersFromBd.forEach(e->{
-        UserDTO userDTO = new UserDTO(e, currentUser);
-        users.add(userDTO);
+        users.add(new UserDTO(e, currentUser));
       });
         return users;
+    }
+
+    @Override
+    public NotificationBoxDTO getNotificationsForUser(User user) {
+
+        System.out.println(user.getNotificationBox().getNotifications());
+        return notificationBoxRepo.fin(user.getNotificationBox());
+    }
+
+    @Override
+    public NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification) {
+        notification.setRead(true);
+        notificationRepo.save(notification);
+
+        return notificationBoxRepo.fin(notificationBox);
     }
 
 

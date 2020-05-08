@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +102,13 @@ public class User {
 
     private Set<User> subscriptions = new HashSet<>();
 
+
+    @OneToOne(mappedBy = "user")
+    private NotificationBox notificationBox;
+
+
+    @OneToMany(mappedBy = "user")
+    private Set<Notification> notifications;
 
     public User() {
     }
@@ -245,5 +253,21 @@ public class User {
 
     public void setSubscribers(Set<User> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    public NotificationBox getNotificationBox() {
+        return notificationBox;
+    }
+
+    public void setNotificationBox(NotificationBox notificationBox) {
+        this.notificationBox = notificationBox;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

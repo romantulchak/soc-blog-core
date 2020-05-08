@@ -1,5 +1,6 @@
 package com.socblog.services.impl;
 
+import com.socblog.models.NotificationBox;
 import com.socblog.models.Role;
 import com.socblog.models.User;
 import com.socblog.models.enums.ERole;
@@ -7,6 +8,7 @@ import com.socblog.payload.request.LoginRequest;
 import com.socblog.payload.request.SignupRequest;
 import com.socblog.payload.response.JwtResponse;
 import com.socblog.payload.response.MessageResponse;
+import com.socblog.repo.NotificationBoxRepo;
 import com.socblog.repo.RoleRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.security.jwt.JwtUtils;
@@ -34,17 +36,20 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepo roleRepo;
     private PasswordEncoder encoder;
     private JwtUtils jwtUtils;
+    private NotificationBoxRepo notificationBoxRepo;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepo userRepo, RoleRepo roleRepo,
                            PasswordEncoder encoder,
-                           JwtUtils jwtUtils){
+                           JwtUtils jwtUtils,
+                           NotificationBoxRepo notificationBoxRepo){
         this.authenticationManager = authenticationManager;
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.notificationBoxRepo = notificationBoxRepo;
     }
 
     @Override
@@ -85,6 +90,9 @@ public class AuthServiceImpl implements AuthService {
         user.setLastName(signupRequest.getLastName());
         user.setRoles(roles);
         userRepo.save(user);
+        NotificationBox notificationBox = new NotificationBox();
+        notificationBox.setUser(user);
+        notificationBoxRepo.save(notificationBox);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

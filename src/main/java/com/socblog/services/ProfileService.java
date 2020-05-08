@@ -1,6 +1,10 @@
 package com.socblog.services;
 
+import com.socblog.dto.NotificationBoxDTO;
+import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
+import com.socblog.models.Notification;
+import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
 import org.springframework.http.ResponseEntity;
 
@@ -14,4 +18,6 @@ public interface ProfileService {
     ResponseEntity<?> startFollowing(User user, User currentUser);
     ResponseEntity<?> stopFollowing(User user, User currentUser);
     List<UserDTO> getSubscriptions(User user, User currentUser);
+    NotificationBoxDTO getNotificationsForUser(User user);
+    NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification);
 }

@@ -1,7 +1,11 @@
 package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.dto.NotificationBoxDTO;
+import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
+import com.socblog.models.Notification;
+import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 import com.socblog.services.impl.ProfileServiceImpl;
@@ -72,5 +76,17 @@ public class ProfileController {
     @JsonView(Views.UserSubscribeFull.class)
     public List<UserDTO> getSubscriptions(@PathVariable("userId") User user, @PathVariable("currentUser") User currentUser){
         return profileService.getSubscriptions(user, currentUser);
+    }
+
+    @GetMapping("/getNotificationsForUser/{userId}")
+    @JsonView(Views.UserFull.class)
+    public NotificationBoxDTO getNotificationsForUser(@PathVariable("userId") User user){
+        return profileService.getNotificationsForUser(user);
+    }
+
+    @PutMapping("/readNotification/{notificationBoxId}/{notificationId}")
+    @JsonView(Views.UserFull.class)
+    public NotificationBoxDTO readNotification(@PathVariable("notificationBoxId") NotificationBox notificationBox, @PathVariable("notificationId")Notification notification){
+        return profileService.readNotification(notificationBox, notification);
     }
 }
