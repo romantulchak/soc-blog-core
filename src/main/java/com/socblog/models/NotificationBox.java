@@ -3,10 +3,7 @@ package com.socblog.models;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
-import java.util.ArrayDeque;
-import java.util.LinkedHashSet;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class NotificationBox {
@@ -21,7 +18,7 @@ public class NotificationBox {
 
     @OneToMany(mappedBy = "notificationBox")
     @JsonView(Views.UserFull.class)
-    private Set<Notification> notifications = new LinkedHashSet<>();
+    private List<Notification> notifications = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -39,11 +36,11 @@ public class NotificationBox {
         this.user = user;
     }
 
-    public Set<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
+    public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
 }

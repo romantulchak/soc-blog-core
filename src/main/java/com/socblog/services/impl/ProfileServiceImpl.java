@@ -11,6 +11,7 @@ import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,9 @@ public class ProfileServiceImpl implements ProfileService {
     private NotificationBoxRepo notificationBoxRepo;
     private NotificationRepo notificationRepo;
 
+
+    private ModelMapper modelMapper;
+
     private UserRepo userRepo;
     @Value("${upload.path}")
     private String uploadPath;
@@ -44,11 +48,16 @@ public class ProfileServiceImpl implements ProfileService {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public ProfileServiceImpl(UserRepo userRepo, SimpMessagingTemplate simpMessagingTemplate, NotificationBoxRepo notificationBoxRepo, NotificationRepo notificationRepo){
+    public ProfileServiceImpl(UserRepo userRepo,
+                              SimpMessagingTemplate simpMessagingTemplate,
+                              NotificationBoxRepo notificationBoxRepo,
+                              NotificationRepo notificationRepo,
+                              ModelMapper modelMapper){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.notificationBoxRepo = notificationBoxRepo;
         this.notificationRepo = notificationRepo;
+        this.modelMapper = modelMapper;
 
     }
 
@@ -88,8 +97,11 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<?> startFollowing(User user, User currentUser) {
         if(user != null && currentUser != null) {
             currentUser.getSubscriptions().add(user);
+            Notification notification = new Notification("Start following", user.getNotificationBox(), currentUser);
             userRepo.save(currentUser);
-            this.simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("startFollowing", user.getId(), currentUser.getId()));
+            notificationRepo.save(notification);
+            PostMessage postMessage = new PostMessage("startFollowing", user.getId(), currentUser.getId(), user.getNotificationBox().getNotifications().stream().filter(x->!x.getRead()).count());
+            this.simpMessagingTemplate.convertAndSend("/topic/update", postMessage);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
 
         }
@@ -110,18 +122,22 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<UserDTO> getSubscriptions(User user, User currentUser) {
-      List<UserDTO> users = new ArrayList<>();
-      List<User> usersFromBd = userRepo.findAllBySubscriptions(user);
-      usersFromBd.forEach(e->{
-        users.add(new UserDTO(e, currentUser));
-      });
-        return users;
+        return userRepo.findAllBySubscriptions(user).stream().map(x-> convertToDto(x, currentUser)).collect(Collectors.toList());
     }
 
     @Override
-    public NotificationBoxDTO getNotificationsForUser(User user) {
+    public List<UserDTO> getSubscribers(User user, User currentUser) {
+        return userRepo.findAllBySubscribers(user).stream().map(x->convertToDto(x, currentUser)).collect(Collectors.toList());
+    }
 
-        System.out.println(user.getNotificationBox().getNotifications());
+    private UserDTO convertToDto(User user, User currentUser){
+        return new UserDTO(user,currentUser);
+
+    }
+
+
+    @Override
+    public NotificationBoxDTO getNotificationsForUser(User user) {
         return notificationBoxRepo.fin(user.getNotificationBox());
     }
 
@@ -129,7 +145,6 @@ public class ProfileServiceImpl implements ProfileService {
     public NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification) {
         notification.setRead(true);
         notificationRepo.save(notification);
-
         return notificationBoxRepo.fin(notificationBox);
     }
 

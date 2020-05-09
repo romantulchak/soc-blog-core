@@ -27,6 +27,15 @@ public class Notification {
     @JsonView(Views.UserFull.class)
     private User user;
 
+    public Notification() {
+    }
+
+    public Notification(String message, NotificationBox notificationBox, User user) {
+        this.message = message;
+        this.isRead = false;
+        this.notificationBox = notificationBox;
+        this.user = user;
+    }
 
     public Long getId() {
         return id;

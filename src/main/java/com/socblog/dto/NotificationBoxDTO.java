@@ -6,8 +6,8 @@ import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class NotificationBoxDTO {
 
@@ -15,7 +15,7 @@ public class NotificationBoxDTO {
     private Long id;
 
     @JsonView(Views.UserFull.class)
-    private Set<Notification> notifications;
+    private List<Notification> notifications;
 
     @JsonView(Views.UserFull.class)
     private Long notificationCounter;
@@ -24,6 +24,7 @@ public class NotificationBoxDTO {
     public NotificationBoxDTO(NotificationBox notificationBox) {
         this.id = notificationBox.getId();
         this.notifications = notificationBox.getNotifications();
+        Collections.reverse(this.notifications);
         this.notificationCounter = notificationBox.getNotifications().stream().filter(x->!x.getRead()).count();
     }
 
@@ -35,11 +36,11 @@ public class NotificationBoxDTO {
         this.id = id;
     }
 
-    public Set<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
+    public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
 

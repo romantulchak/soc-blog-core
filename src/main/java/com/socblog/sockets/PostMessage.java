@@ -5,7 +5,7 @@ public class PostMessage extends Message {
 
     private long userId;
     private long currentUserId;
-
+    private long notificationCounter;
     public PostMessage(String title, long userId) {
         super(title);
         this.userId = userId;
@@ -15,6 +15,15 @@ public class PostMessage extends Message {
         this.userId = userId;
         this.currentUserId = currentUserId;
     }
+    public PostMessage(String title, long userId, long currentUserId, long notificationCounter) {
+        super(title);
+        this.userId = userId;
+        this.currentUserId = currentUserId;
+        this.notificationCounter = notificationCounter;
+    }
+
+
+
 
     public long getUserId() {
         return userId;
@@ -31,5 +40,13 @@ public class PostMessage extends Message {
 
     public void setCurrentUserId(long currentUserId) {
         this.currentUserId = currentUserId;
+    }
+
+    public long getNotificationCounter() {
+        return notificationCounter;
+    }
+
+    public void setNotificationCounter(long notificationCounter) {
+        this.notificationCounter = notificationCounter;
     }
 }

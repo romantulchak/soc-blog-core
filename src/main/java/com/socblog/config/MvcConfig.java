@@ -1,6 +1,8 @@
 package com.socblog.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,4 +16,12 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/avatars_min/**").addResourceLocations("file://" + uploadPath + "/" );
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
+
+
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
+
+
 }

@@ -77,6 +77,14 @@ public class ProfileController {
     public List<UserDTO> getSubscriptions(@PathVariable("userId") User user, @PathVariable("currentUser") User currentUser){
         return profileService.getSubscriptions(user, currentUser);
     }
+    @GetMapping("/subscribers/{userId}/{currentUser}")
+    @JsonView(Views.UserSubscribeFull.class)
+    public List<UserDTO> getSubscribers(@PathVariable("userId") User user, @PathVariable("currentUser") User currentUser){
+        return profileService.getSubscribers(user, currentUser);
+    }
+
+
+
 
     @GetMapping("/getNotificationsForUser/{userId}")
     @JsonView(Views.UserFull.class)

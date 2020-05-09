@@ -23,4 +23,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
 
     List<User> findAllBySubscriptions(User user);
+
+    List<User> findAllBySubscribers(User user);
 }
