@@ -11,10 +11,14 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${upload.path}")
     private String uploadPath;
 
+    @Value("${upload.path.avatarFull}")
+    private String fullUploadPath;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/avatars_min/**").addResourceLocations("file://" + uploadPath + "/" );
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/avatarFull/**").addResourceLocations("file://" + uploadPath +"/");
     }
 
 

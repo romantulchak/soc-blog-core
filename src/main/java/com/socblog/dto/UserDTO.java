@@ -1,6 +1,7 @@
 package com.socblog.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.models.Image;
 import com.socblog.models.Post;
 import com.socblog.models.User;
 import com.socblog.models.Views;
@@ -65,6 +66,9 @@ public class UserDTO {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private Boolean isSubscribe;
 
+    @JsonView(Views.UserFull.class)
+    private List<Image> images;
+
     public UserDTO(){
 
     }
@@ -89,6 +93,7 @@ public class UserDTO {
         this.subscriptionsCounter = user.getSubscriptions().size();
         this.isSubscribe = this.subscriptions.contains(user);
         this.postsCounter = user.getPosts().size();
+        this.images = user.getImages();
     }
 
 
@@ -113,6 +118,7 @@ public class UserDTO {
         this.subscribersCounter = user.getSubscribers().size();
         this.subscriptionsCounter = user.getSubscriptions().size();
         this.postsCounter = user.getPosts().size();
+        this.images = user.getImages();
     }
 
 
@@ -267,5 +273,13 @@ public class UserDTO {
 
     public void setPostsCounter(long postsCounter) {
         this.postsCounter = postsCounter;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }

@@ -1,6 +1,7 @@
 package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
@@ -39,10 +40,10 @@ public class ProfileController {
     }
 
 
-    @PutMapping("/setAvatar/{userId}")
+    @PutMapping(value = "/setAvatar/{userId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> setAvatar(@RequestBody String image, @PathVariable("userId") User user) throws IOException {
-        return profileService.setUserAvatar(image, user);
+    public ResponseEntity<?> setAvatar(@RequestPart("file") MultipartFile file, @RequestPart("avatar") String image, @PathVariable("userId") User user) throws IOException {
+        return profileService.setUserAvatar(image, user, file);
     }
 
     @PutMapping("/updateUserData")

@@ -83,6 +83,11 @@ public class User {
     @JsonView(Views.UserFull.class)
     private List<Post> posts;
 
+    @ElementCollection
+    @JsonView(Views.UserFull.class)
+    private List<Image> images;
+
+
     @ManyToMany
     @JoinTable(
             name="user_subscribtion",
@@ -269,5 +274,13 @@ public class User {
 
     public void setNotifications(Set<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }

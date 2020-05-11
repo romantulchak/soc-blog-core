@@ -1,8 +1,10 @@
 package com.socblog.services.impl;
 
+import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
+import com.socblog.models.Image;
 import com.socblog.models.Notification;
 import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
@@ -19,12 +21,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -44,6 +50,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Value("${upload.path}")
     private String uploadPath;
 
+    @Value("${upload.path.avatarFull}")
+    private String fullUploadPath;
 
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -71,16 +79,28 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<?> setUserAvatar(String avatar, User user)throws IOException {
+    public ResponseEntity<?> setUserAvatar(String avatar, User user, MultipartFile multipartFile)throws IOException {
+        String avatarPath = bast64ToFile(avatar, user);
+        user.setAvatar("http://localhost:8080/avatars_min/" + avatarPath);
+        if(multipartFile != null && multipartFile.getSize() < 5242880) {
+            String filePath = fullUploadPath + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
+            Path copyLocation = Paths.get(filePath);
+            Files.copy(multipartFile.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+            user.getImages().add(new Image(filePath));
+        }else{
+            System.out.println("Need to compress");
+        }
+        userRepo.save(user);
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    private String bast64ToFile(String avatar, User user) throws IOException {
         String base64Image = avatar.split(",")[1];
         String avatarPath = user.getUsername() + UUID.randomUUID() + ".png";
         byte[] decodeImage = Base64.getDecoder().decode(base64Image.getBytes(StandardCharsets.UTF_8));
         Path destinationFile = Paths.get(uploadPath, avatarPath);
         Files.write(destinationFile, decodeImage);
-        user.setAvatar("http://localhost:8080/avatars_min/" + avatarPath);
-        userRepo.save(user);
-
-        return new ResponseEntity<>("Ok", HttpStatus.OK);
+        return avatarPath;
     }
 
     @Override
@@ -113,7 +133,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (user != null && currentUser != null){
             currentUser.getSubscriptions().remove(user);
             userRepo.save(currentUser);
-            this.simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("startFollowing", user.getId(), currentUser.getId()));
+            this.simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("stopFollowing", user.getId(), currentUser.getId()));
             return new ResponseEntity<>("Ok", HttpStatus.OK);
         }
 
