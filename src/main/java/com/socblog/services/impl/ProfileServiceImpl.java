@@ -13,6 +13,7 @@ import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
+import com.socblog.utils.FileSaver;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,11 +83,8 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<?> setUserAvatar(String avatar, User user, MultipartFile multipartFile)throws IOException {
         String avatarPath = bast64ToFile(avatar, user);
         user.setAvatar("http://localhost:8080/avatars_min/" + avatarPath);
-        if(multipartFile != null && multipartFile.getSize() < 5242880) {
-            String filePath = fullUploadPath + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
-            Path copyLocation = Paths.get(filePath);
-            Files.copy(multipartFile.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-            user.getImages().add(new Image(filePath));
+        if(multipartFile.getSize() < 5242880) {
+            user.getImages().add(new Image(FileSaver.saveFile(multipartFile, fullUploadPath, "avatars_full")));
         }else{
             System.out.println("Need to compress");
         }

@@ -1,6 +1,7 @@
 package com.socblog.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.dto.PostDTO;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -21,7 +22,6 @@ public class Post {
     private String name;
 
     @JsonView(Views.UserFull.class)
-    @Size(max = 100000)
     private String text;
 
     @ManyToMany
@@ -33,9 +33,10 @@ public class Post {
     @JsonView(Views.UserFull.class)
     private List<Tag> tags = new ArrayList<>();
 
-   /* @ElementCollection
-    private List<Image> images = new ArrayList<>();
-*/
+    @JsonView(Views.UserFull.class)
+    private String imagePath;
+
+
     @ManyToOne
     private User user;
 
@@ -43,11 +44,12 @@ public class Post {
 
     }
 
-    public Post(String name, @Size(max = 100000) String text,User user, List<Tag> tags) {
-        this.name = name;
-        this.text = text;
-        this.user = user;
-        this.tags = tags;
+    public Post(PostDTO postDTO, String imagePath) {
+        this.name = postDTO.getName();
+        this.text = postDTO.getText();
+        this.user = postDTO.getUser();
+        this.tags = postDTO.getTags();
+        this.imagePath = imagePath;
     }
 
     public Long getId() {
@@ -81,15 +83,15 @@ public class Post {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
-/*
-    public List<Image> getImages() {
-        return images;
+
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
-*/
+
     public User getUser() {
         return user;
     }
