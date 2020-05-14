@@ -22,12 +22,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
     private long id;
 
     @NotBlank
     @Size(max = 25, min = 3)
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.PostFull.class})
     private String username;
 
     @NotBlank
@@ -56,11 +56,11 @@ public class User {
     private String city;
 
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
     @NotBlank
     private String firstName;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
     @NotBlank
     private String lastName;
 
@@ -70,7 +70,7 @@ public class User {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String country;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
     private String avatar;
 
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})

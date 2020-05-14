@@ -6,6 +6,8 @@ import com.socblog.dto.PostDTO;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +17,13 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.PostFull.class})
     private Long id;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.PostFull.class})
     private String name;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.PostFull.class})
     private String text;
 
     @ManyToMany
@@ -30,15 +32,23 @@ public class Post {
                 inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.PostFull.class})
     private List<Tag> tags = new ArrayList<>();
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.PostFull.class})
     private String imagePath;
 
 
     @ManyToOne
+    @JsonView(Views.PostFull.class)
     private User user;
+
+    @JsonView(Views.PostFull.class)
+    private LocalDateTime createdDate;
+
+    @JsonView(Views.PostFull.class)
+    @Size(max = 1000)
+    private String smallDescription;
 
     public Post(){
 
@@ -50,6 +60,9 @@ public class Post {
         this.user = postDTO.getUser();
         this.tags = postDTO.getTags();
         this.imagePath = imagePath;
+        this.smallDescription =  postDTO.getSmallDescription();
+        this.createdDate = LocalDateTime.now();
+
     }
 
     public Long getId() {
@@ -98,5 +111,21 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getSmallDescription() {
+        return smallDescription;
+    }
+
+    public void setSmallDescription(String smallDescription) {
+        this.smallDescription = smallDescription;
     }
 }

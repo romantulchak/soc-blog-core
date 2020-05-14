@@ -2,17 +2,19 @@ package com.socblog.services.impl;
 
 import com.google.gson.Gson;
 import com.socblog.dto.PostDTO;
+import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
-import com.socblog.models.Tag;
 import com.socblog.models.User;
 import com.socblog.repo.PostRepo;
 import com.socblog.repo.TagRepo;
 import com.socblog.services.PostService;
 import com.socblog.sockets.PostMessage;
-import com.socblog.sockets.ResponseMessage;
 import com.socblog.utils.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -41,13 +44,17 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public List<Post> getAllPost() {
-        return null;
+    public PostPageableDTO getAllPost(User user, int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Post> posts = postRepo.findAllBySubscriptions(user.getSubscriptions(), pageable);
+        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
     }
 
     @Override
-    public List<Post> getAllForUser(User user) {
-        return null;
+    public PostPageableDTO getAllForUser(User user, int page) {
+        Pageable pageable = PageRequest.of(page, 2 );
+        Page<Post> posts = postRepo.findAllForUser(user, pageable);
+        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
     }
 
     @Override
@@ -59,17 +66,12 @@ public class PostServiceImpl implements PostService {
         simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("updatePosts", postDTO.getUser().getId()));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
-
     @Override
     public ResponseEntity<?> editPost(Post post) {
         return null;
     }
-
     @Override
     public ResponseEntity<?> deletePost(Post post) {
         return null;
     }
-
-
-
 }

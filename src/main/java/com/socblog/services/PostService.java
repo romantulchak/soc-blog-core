@@ -1,6 +1,7 @@
 package com.socblog.services;
 
 import com.socblog.dto.PostDTO;
+import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
 import com.socblog.models.User;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public interface PostService {
 
-    List<Post> getAllPost();
-    List<Post> getAllForUser(User user);
+    PostPageableDTO getAllPost(User user, int page);
+    PostPageableDTO getAllForUser(User user, int page);
     ResponseEntity<?> createPost(String post, MultipartFile file) throws IOException;
     ResponseEntity<?> editPost(Post post);
     ResponseEntity<?> deletePost(Post post);
