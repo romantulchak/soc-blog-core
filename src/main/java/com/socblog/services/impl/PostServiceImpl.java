@@ -7,9 +7,11 @@ import com.socblog.models.Post;
 import com.socblog.models.User;
 import com.socblog.repo.PostRepo;
 import com.socblog.repo.TagRepo;
+import com.socblog.repo.UserRepo;
 import com.socblog.services.PostService;
 import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
+import com.socblog.utils.UserLevelUp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -22,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -34,12 +34,17 @@ public class PostServiceImpl implements PostService {
 
     private PostRepo postRepo;
     private TagRepo tagRepo;
+    private UserRepo userRepo;
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
-    public PostServiceImpl(PostRepo postRepo, TagRepo tagRepo, SimpMessagingTemplate simpMessagingTemplate){
+    public PostServiceImpl(PostRepo postRepo,
+                           TagRepo tagRepo,
+                           SimpMessagingTemplate simpMessagingTemplate,
+                           UserRepo userRepo){
         this.postRepo = postRepo;
         this.tagRepo = tagRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userRepo = userRepo;
     }
 
 
@@ -62,7 +67,11 @@ public class PostServiceImpl implements PostService {
         Gson g = new Gson();
         PostDTO postDTO = g.fromJson(postString, PostDTO.class);
         Post post = new Post(postDTO, FileSaver.saveFile(file, path,"posts_images"));
+
         postRepo.save(post);
+        User user = userRepo.findById(post.getUser().getId()).orElse(null);
+        assert user != null : "user is null";
+        userRepo.save(UserLevelUp.levelUpByPost(user, post));
         simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("updatePosts", postDTO.getUser().getId()));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
@@ -73,5 +82,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<?> deletePost(Post post) {
         return null;
+    }
+
+
+    @Override
+    public PostPageableDTO getPostsByTag(String tagName, int page) {
+        Pageable pageable = PageRequest.of(page, 2);
+        Page<Post> posts = postRepo.findPostsByTagName(tagName, pageable);
+        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
     }
 }

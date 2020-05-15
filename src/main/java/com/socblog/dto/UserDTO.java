@@ -68,7 +68,15 @@ public class UserDTO {
 
     @JsonView(Views.UserFull.class)
     private List<Image> images;
+    @JsonView(Views.UserFull.class)
+    private int accountLvl;
 
+
+    @JsonView(Views.UserFull.class)
+    private double currentExperience;
+
+    @JsonView(Views.UserFull.class)
+    private double experienceToNextLevel;
     public UserDTO(){
 
     }
@@ -94,6 +102,9 @@ public class UserDTO {
         this.isSubscribe = this.subscriptions.contains(user);
         this.postsCounter = user.getPosts().size();
         this.images = user.getImages();
+        this.accountLvl = user.getAccountLvl();
+        this.currentExperience = user.getCurrentExperience();
+        this.experienceToNextLevel = user.getExperienceToNextLevel();
     }
 
 
@@ -119,6 +130,9 @@ public class UserDTO {
         this.subscriptionsCounter = user.getSubscriptions().size();
         this.postsCounter = user.getPosts().size();
         this.images = user.getImages();
+        this.accountLvl = user.getAccountLvl();
+        this.currentExperience = user.getCurrentExperience();
+        this.experienceToNextLevel = user.getExperienceToNextLevel();
     }
 
 
@@ -281,5 +295,29 @@ public class UserDTO {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public int getAccountLvl() {
+        return accountLvl;
+    }
+
+    public void setAccountLvl(int accountLvl) {
+        this.accountLvl = accountLvl;
+    }
+
+    public double getCurrentExperience() {
+        return currentExperience;
+    }
+
+    public void setCurrentExperience(int currentExperience) {
+        this.currentExperience = currentExperience;
+    }
+
+    public double getExperienceToNextLevel() {
+        return experienceToNextLevel;
+    }
+
+    public void setExperienceToNextLevel(int experienceToNextLevel) {
+        this.experienceToNextLevel = experienceToNextLevel;
     }
 }

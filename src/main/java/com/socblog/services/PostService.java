@@ -17,5 +17,5 @@ public interface PostService {
     ResponseEntity<?> createPost(String post, MultipartFile file) throws IOException;
     ResponseEntity<?> editPost(Post post);
     ResponseEntity<?> deletePost(Post post);
-
+    PostPageableDTO getPostsByTag(String tagName, int page);
 }

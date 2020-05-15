@@ -88,6 +88,22 @@ public class User {
     private List<Image> images;
 
 
+    @JsonView(Views.UserFull.class)
+    private int accountLvl = 1;
+
+
+    @JsonView(Views.UserFull.class)
+    private double currentExperience = 0;
+
+    @JsonView(Views.UserFull.class)
+    private double experienceToNextLevel = 500;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<Tag> tags;
+
+
+
     @ManyToMany
     @JoinTable(
             name="user_subscribtion",
@@ -282,5 +298,37 @@ public class User {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public int getAccountLvl() {
+        return accountLvl;
+    }
+
+    public void setAccountLvl(int accountLvl) {
+        this.accountLvl = accountLvl;
+    }
+
+    public double getCurrentExperience() {
+        return currentExperience;
+    }
+
+    public void setCurrentExperience(double currentExperience) {
+        this.currentExperience = currentExperience;
+    }
+
+    public double getExperienceToNextLevel() {
+        return experienceToNextLevel;
+    }
+
+    public void setExperienceToNextLevel(double experienceToNextLevel) {
+        this.experienceToNextLevel = experienceToNextLevel;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

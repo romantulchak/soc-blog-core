@@ -1,5 +1,6 @@
 package com.socblog.config;
 
+import com.socblog.utils.UserLevelUp;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
+
 
 
 }

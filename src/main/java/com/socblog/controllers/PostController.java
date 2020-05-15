@@ -51,4 +51,12 @@ public class PostController {
     public PostPageableDTO news (@PathVariable("userId") User user, @RequestParam(value = "page",defaultValue = "0") int page){
         return postService.getAllPost(user, page);
     }
+
+    @GetMapping("/postsByTag/{tagName}")
+    @PreAuthorize("hasRole('USER')")
+    @JsonView(Views.PostFull.class)
+    public PostPageableDTO postsByTag(@PathVariable("tagName") String tagName, @RequestParam(value = "page", defaultValue = "0") int page){
+        return postService.getPostsByTag(tagName, page);
+
+    }
 }

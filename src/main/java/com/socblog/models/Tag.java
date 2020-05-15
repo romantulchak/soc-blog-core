@@ -10,11 +10,15 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.TagFull.class})
     private Long id;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class,Views.PostFull.class,Views.TagFull.class})
     private String name;
+
+
+    @ManyToOne
+    private User user;
 
     @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
@@ -23,10 +27,11 @@ public class Tag {
 
     }
 
-    public Tag(Long id, String name, List<Post> posts) {
+    public Tag(Long id, String name, List<Post> posts, User user) {
         this.id = id;
         this.name = name;
         this.posts = posts;
+        this.user = user;
     }
 
     public Long getId() {
@@ -51,5 +56,13 @@ public class Tag {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

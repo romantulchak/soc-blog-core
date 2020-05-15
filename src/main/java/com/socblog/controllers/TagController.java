@@ -1,14 +1,13 @@
 package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.dto.TagDTO;
 import com.socblog.models.Tag;
 import com.socblog.models.Views;
 import com.socblog.services.impl.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,9 +24,14 @@ public class TagController {
     }
 
     @GetMapping("/getTags")
-    @JsonView(Views.UserFull.class)
-    public List<Tag> getTags(){
-        return this.tagService.getAllTags();
+    @JsonView(Views.TagFull.class)
+    public List<TagDTO> getTags(){
+        return tagService.getAllTags();
+    }
+
+    @PostMapping("/createTag")
+    public ResponseEntity<?> createTag(@RequestBody Tag tag){
+        return tagService.createTag(tag);
     }
 
 
