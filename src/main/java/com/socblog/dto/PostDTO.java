@@ -6,6 +6,7 @@ import com.socblog.models.Tag;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class PostDTO {
     private String image;
 
     @JsonView(Views.PostFull.class)
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
     @JsonView(Views.PostFull.class)
     private String smallDescription;
 
@@ -42,7 +43,7 @@ public class PostDTO {
         this.tags = post.getTags();
         this.user = post.getUser();
         this.image = post.getImagePath();
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = LocalDate.now();
         this.smallDescription = post.getSmallDescription();
     }
 
@@ -94,11 +95,11 @@ public class PostDTO {
         this.image = image;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 

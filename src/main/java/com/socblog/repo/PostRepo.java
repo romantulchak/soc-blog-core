@@ -1,5 +1,6 @@
 package com.socblog.repo;
 
+import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.models.Post;
 import com.socblog.models.User;
@@ -28,5 +29,10 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
    @Query(value = "SELECT p FROM Post p join p.tags t where t.name = ?1 order by p.createdDate")
    Page<Post> findPostsByTagName(String tagName, Pageable pageable);
+
+
+   @Query(value = "SELECT new com.socblog.dto.PostByDateDTO(p.createdDate, count (p)) FROM Post p where p.user = :user group by p.createdDate")
+   List<PostByDateDTO> postsByDate(@Param("user")User user);
+
 
 }

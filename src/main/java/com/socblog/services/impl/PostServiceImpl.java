@@ -1,6 +1,7 @@
 package com.socblog.services.impl;
 
 import com.google.gson.Gson;
+import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Service
@@ -90,5 +92,13 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(page, 2);
         Page<Post> posts = postRepo.findPostsByTagName(tagName, pageable);
         return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
+    }
+
+    @Override
+    public List<PostByDateDTO> getPostsForChart(User user) {
+        if(user != null){
+            return postRepo.postsByDate(user);
+        }
+        return null;
     }
 }

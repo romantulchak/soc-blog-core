@@ -1,5 +1,6 @@
 package com.socblog.services;
 
+import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
@@ -18,4 +19,5 @@ public interface PostService {
     ResponseEntity<?> editPost(Post post);
     ResponseEntity<?> deletePost(Post post);
     PostPageableDTO getPostsByTag(String tagName, int page);
+    List<PostByDateDTO> getPostsForChart(User user);
 }

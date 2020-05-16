@@ -77,6 +77,10 @@ public class UserDTO {
 
     @JsonView(Views.UserFull.class)
     private double experienceToNextLevel;
+
+    @JsonView(Views.UserFull.class)
+    private LocalDate createdUser;
+
     public UserDTO(){
 
     }
@@ -105,6 +109,7 @@ public class UserDTO {
         this.accountLvl = user.getAccountLvl();
         this.currentExperience = user.getCurrentExperience();
         this.experienceToNextLevel = user.getExperienceToNextLevel();
+        this.createdUser = user.getCreatedUser();
     }
 
 
@@ -133,6 +138,7 @@ public class UserDTO {
         this.accountLvl = user.getAccountLvl();
         this.currentExperience = user.getCurrentExperience();
         this.experienceToNextLevel = user.getExperienceToNextLevel();
+        this.createdUser = user.getCreatedUser();
     }
 
 
@@ -319,5 +325,21 @@ public class UserDTO {
 
     public void setExperienceToNextLevel(int experienceToNextLevel) {
         this.experienceToNextLevel = experienceToNextLevel;
+    }
+
+    public void setCurrentExperience(double currentExperience) {
+        this.currentExperience = currentExperience;
+    }
+
+    public void setExperienceToNextLevel(double experienceToNextLevel) {
+        this.experienceToNextLevel = experienceToNextLevel;
+    }
+
+    public LocalDate getCreatedUser() {
+        return createdUser;
+    }
+
+    public void setCreatedUser(LocalDate createdUser) {
+        this.createdUser = createdUser;
     }
 }

@@ -2,6 +2,7 @@ package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.gson.Gson;
+import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
@@ -58,5 +59,12 @@ public class PostController {
     public PostPageableDTO postsByTag(@PathVariable("tagName") String tagName, @RequestParam(value = "page", defaultValue = "0") int page){
         return postService.getPostsByTag(tagName, page);
 
+    }
+
+    @GetMapping("/postsForChart/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    @JsonView(Views.PostFull.class)
+    public List<PostByDateDTO> postsForChart(@PathVariable("userId")User user){
+        return postService.getPostsForChart(user);
     }
 }

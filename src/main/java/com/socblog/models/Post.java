@@ -44,7 +44,7 @@ public class Post {
     private User user;
 
     @JsonView(Views.PostFull.class)
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     @JsonView(Views.PostFull.class)
     @Size(max = 1000)
@@ -61,7 +61,7 @@ public class Post {
         this.tags = postDTO.getTags();
         this.imagePath = imagePath;
         this.smallDescription =  postDTO.getSmallDescription();
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = LocalDate.now();
 
     }
 
@@ -113,11 +113,11 @@ public class Post {
         this.user = user;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 

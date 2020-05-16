@@ -131,13 +131,19 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications;
 
+
+    @JsonView(Views.UserFull.class)
+    private LocalDate createdUser;
+
+
     public User() {
     }
 
-    public User(@NotBlank @Size(max = 25, min = 3) String username, @NotBlank @Email @Size(max = 50) String email, @NotBlank @Size(max = 120, min = 6) String password) {
+    public User(@NotBlank @Size(max = 25, min = 3) String username, @NotBlank @Email @Size(max = 50) String email, @NotBlank @Size(max = 120, min = 6) String password ) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.createdUser = LocalDate.now();
     }
 
     public long getId() {
@@ -330,5 +336,13 @@ public class User {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public LocalDate getCreatedUser() {
+        return createdUser;
+    }
+
+    public void setCreatedUser(LocalDate createdUser) {
+        this.createdUser = createdUser;
     }
 }
