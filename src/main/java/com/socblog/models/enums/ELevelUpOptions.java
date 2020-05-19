@@ -1,7 +1,7 @@
 package com.socblog.models.enums;
 
 public enum ELevelUpOptions {
-    LEVEL_UP_BY_POST(1.75), LEVEL_UP_BY_FOLLOW(0.5), LEVEL_UP_BY_READ_POSTS(0.25);
+    LEVEL_UP_BY_POST(1.75), LEVEL_UP_BY_TAG(0.5), LEVEL_UP_BY_READ_POSTS(0.25);
 
     private double coefficient;
 

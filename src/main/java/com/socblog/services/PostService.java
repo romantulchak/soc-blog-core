@@ -20,4 +20,5 @@ public interface PostService {
     ResponseEntity<?> deletePost(Post post);
     PostPageableDTO getPostsByTag(String tagName, int page);
     List<PostByDateDTO> getPostsForChart(User user);
+    PostDTO getPostsBy(Post post);
 }

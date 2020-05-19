@@ -3,6 +3,7 @@ package com.socblog.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.dto.TagDTO;
 import com.socblog.models.Tag;
+import com.socblog.models.User;
 import com.socblog.models.Views;
 import com.socblog.services.impl.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ public class TagController {
         return tagService.getAllTags();
     }
 
-    @PostMapping("/createTag")
-    public ResponseEntity<?> createTag(@RequestBody Tag tag){
-        return tagService.createTag(tag);
+    @PostMapping("/createTag/{userId}")
+    public ResponseEntity<?> createTag(@RequestBody Tag tag, @PathVariable("userId") User user){
+        return tagService.createTag(tag, user);
     }
 
 

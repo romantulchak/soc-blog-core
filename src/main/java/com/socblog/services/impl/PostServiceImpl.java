@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
         postRepo.save(post);
         User user = userRepo.findById(post.getUser().getId()).orElse(null);
         assert user != null : "user is null";
-        userRepo.save(UserLevelUp.levelUpByPost(user, post));
+        userRepo.save(new UserLevelUp().levelUpByPost(user, post));
         simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("updatePosts", postDTO.getUser().getId()));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
@@ -100,5 +100,10 @@ public class PostServiceImpl implements PostService {
             return postRepo.postsByDate(user);
         }
         return null;
+    }
+
+    @Override
+    public PostDTO getPostsBy(Post post) {
+        return new PostDTO(post);
     }
 }

@@ -15,9 +15,9 @@ public class UserLevelUp {
         }
         return user;
     }
-    public User levelUpByFollow(User user){
+    public User levelUpByTag(User user){
         if(user != null){
-            user.setCurrentExperience(user.getCurrentExperience() + ( 20 * ELevelUpOptions.LEVEL_UP_BY_POST.getCoefficient()));
+            user.setCurrentExperience(user.getCurrentExperience() + ( 20 * ELevelUpOptions.LEVEL_UP_BY_TAG.getCoefficient()));
             upLvl(user);
         }
         return user;

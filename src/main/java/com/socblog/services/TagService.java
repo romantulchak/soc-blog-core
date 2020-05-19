@@ -11,7 +11,7 @@ import java.util.List;
 public interface TagService {
 
     List<TagDTO> getAllTags();
-    ResponseEntity<?> createTag(Tag tag);
+    ResponseEntity<?> createTag(Tag tag, User user);
     ResponseEntity<?> editTag(Tag tag);
     ResponseEntity<?> deleteTag(Tag tag);
 

@@ -67,4 +67,11 @@ public class PostController {
     public List<PostByDateDTO> postsForChart(@PathVariable("userId")User user){
         return postService.getPostsForChart(user);
     }
+    @GetMapping("/getPostById/{postId}")
+    @PreAuthorize("hasRole('USER')")
+    @JsonView(Views.PostFull.class)
+    public PostDTO getPostById(@PathVariable("postId") Post post){
+        return postService.getPostsBy(post);
+    }
+
 }
