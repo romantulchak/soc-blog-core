@@ -50,6 +50,10 @@ public class Post {
     @Size(max = 1000)
     private String smallDescription;
 
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
+
     public Post(){
 
     }
@@ -127,5 +131,14 @@ public class Post {
 
     public void setSmallDescription(String smallDescription) {
         this.smallDescription = smallDescription;
+    }
+
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

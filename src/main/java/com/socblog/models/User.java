@@ -27,7 +27,7 @@ public class User {
 
     @NotBlank
     @Size(max = 25, min = 3)
-    @JsonView({Views.UserFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class})
     private String username;
 
     @NotBlank
@@ -70,7 +70,7 @@ public class User {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String country;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class})
     private String avatar;
 
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
@@ -135,6 +135,8 @@ public class User {
     @JsonView(Views.UserFull.class)
     private LocalDate createdUser;
 
+    @OneToMany
+    private List<Comment> comments;
 
     public User() {
     }
@@ -344,5 +346,13 @@ public class User {
 
     public void setCreatedUser(LocalDate createdUser) {
         this.createdUser = createdUser;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

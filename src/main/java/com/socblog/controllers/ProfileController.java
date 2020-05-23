@@ -77,7 +77,7 @@ public class ProfileController {
     public Long notification(String id){
         return Long.parseLong(id);
     }
-    
+
 
     @PutMapping("/stopFollowing/{userId}/{currentUserById}")
     public ResponseEntity<?> stopFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
