@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,7 +60,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostPageableDTO getAllForUser(User user, int page) {
-        Pageable pageable = PageRequest.of(page, 2 );
+        Pageable pageable = PageRequest.of(page, 6 );
         Page<Post> posts = postRepo.findAllForUser(user, pageable);
         return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
     }
@@ -106,4 +107,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO getPostsBy(Post post) {
         return new PostDTO(post);
     }
+
+
+
 }

@@ -118,8 +118,6 @@ public class ProfileServiceImpl implements ProfileService {
             Notification notification = new Notification("Start following", user.getNotificationBox(), currentUser);
             userRepo.save(currentUser);
             notificationRepo.save(notification);
-            PostMessage postMessage = new PostMessage("startFollowing", user.getId(), currentUser.getId(), user.getNotificationBox().getNotifications().stream().filter(x->!x.getRead()).count());
-            this.simpMessagingTemplate.convertAndSend("/topic/update", postMessage);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
 
         }

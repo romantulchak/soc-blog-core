@@ -13,6 +13,9 @@ import com.socblog.services.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +71,14 @@ public class ProfileController {
     public ResponseEntity<?> startFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
         return profileService.startFollowing(user, currentUser);
     }
+
+    @MessageMapping("/startFollow/")
+    @SendTo("/topic/notification")
+    public Long notification(String id){
+        return Long.parseLong(id);
+    }
+    
+
     @PutMapping("/stopFollowing/{userId}/{currentUserById}")
     public ResponseEntity<?> stopFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
         return profileService.stopFollowing(user, currentUser);
