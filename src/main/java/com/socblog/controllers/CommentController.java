@@ -2,6 +2,7 @@ package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.dto.CommentDTO;
+import com.socblog.dto.CommentPageableDTO;
 import com.socblog.models.Views;
 import com.socblog.services.impl.CommentServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ public class CommentController {
 
     @GetMapping("/commentsByPost/{id}")
     @JsonView(Views.CommentFull.class)
-    public List<CommentDTO> commentsByPost(@PathVariable("id") Long postId){
+    public CommentPageableDTO commentsByPost(@PathVariable("id") Long postId, @RequestParam(value = "page") int page){
 
-        return commentService.getCommentsForPost(postId);
+        return commentService.getCommentsForPost(postId, page);
 
     }
 

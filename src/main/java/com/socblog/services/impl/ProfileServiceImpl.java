@@ -173,4 +173,13 @@ public class ProfileServiceImpl implements ProfileService {
 
         return new UserDTO(user, userInSystem);
     }
+
+    @Override
+    public void setOnline(Long userId, boolean isOnline) {
+        User user = userRepo.findById(userId).orElse(null);
+        if(user != null){
+            user.setOnline(isOnline);
+            this.userRepo.save(user);
+        }
+    }
 }

@@ -10,12 +10,16 @@ import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 import com.socblog.services.impl.ProfileServiceImpl;
+import com.socblog.utils.UserOnlineUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,10 +98,6 @@ public class ProfileController {
     public List<UserDTO> getSubscribers(@PathVariable("userId") User user, @PathVariable("currentUser") User currentUser){
         return profileService.getSubscribers(user, currentUser);
     }
-
-
-
-
     @GetMapping("/getNotificationsForUser/{userId}")
     @JsonView(Views.UserFull.class)
     public NotificationBoxDTO getNotificationsForUser(@PathVariable("userId") User user){
@@ -109,4 +109,15 @@ public class ProfileController {
     public NotificationBoxDTO readNotification(@PathVariable("notificationBoxId") NotificationBox notificationBox, @PathVariable("notificationId")Notification notification){
         return profileService.readNotification(notificationBox, notification);
     }
+
+    @MessageMapping("/setOnline/{userId}")
+    @SendTo("/topic/online")
+    @Scheduled(fixedDelay = 1000)
+    public UserOnlineUtils setOnline(boolean isOnline, @DestinationVariable Long userId){
+        System.out.println(isOnline);
+        profileService.setOnline(userId,isOnline);
+
+        return new UserOnlineUtils(userId,isOnline);
+    }
+
 }

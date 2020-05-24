@@ -1,5 +1,7 @@
 package com.socblog.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -8,14 +10,18 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(Views.CommentFull.class)
     private Long id;
+
     @Size(max = 5000)
+    @JsonView(Views.CommentFull.class)
     private String text;
 
     @ManyToOne
     private Post post;
 
     @ManyToOne
+    @JsonView(Views.CommentFull.class)
     private User user;
 
 

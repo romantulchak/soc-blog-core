@@ -81,6 +81,11 @@ public class UserDTO {
     @JsonView(Views.UserFull.class)
     private LocalDate createdUser;
 
+    @JsonView(Views.UserFull.class)
+    private boolean isOnline;
+
+
+
     public UserDTO(){
 
     }
@@ -110,6 +115,7 @@ public class UserDTO {
         this.currentExperience = user.getCurrentExperience();
         this.experienceToNextLevel = user.getExperienceToNextLevel();
         this.createdUser = user.getCreatedUser();
+        this.isOnline = user.isOnline();
     }
 
 
@@ -139,6 +145,7 @@ public class UserDTO {
         this.currentExperience = user.getCurrentExperience();
         this.experienceToNextLevel = user.getExperienceToNextLevel();
         this.createdUser = user.getCreatedUser();
+        this.isOnline = user.isOnline();
     }
 
 

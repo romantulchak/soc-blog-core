@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -99,6 +100,11 @@ public class User {
     private double experienceToNextLevel = 500;
 
 
+    @JsonView(Views.UserFull.class)
+    private boolean isOnline;
+
+
+
     @OneToMany(mappedBy = "user")
     private List<Tag> tags;
 
@@ -135,7 +141,7 @@ public class User {
     @JsonView(Views.UserFull.class)
     private LocalDate createdUser;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
     public User() {
@@ -354,5 +360,13 @@ public class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

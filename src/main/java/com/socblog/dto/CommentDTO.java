@@ -20,19 +20,17 @@ public class CommentDTO {
     @JsonView(Views.CommentFull.class)
     private User user;
 
-    @JsonView(Views.CommentFull.class)
-    private Long commentsCounter;
+
 
     public CommentDTO(){
 
     }
 
-    public CommentDTO(Comment comment, Long commentsCounter) {
+    public CommentDTO(Comment comment) {
         this.id = comment.getId();
         this.post = comment.getPost();
         this.text = comment.getText();
         this.user = comment.getUser();
-        this.commentsCounter = commentsCounter;
     }
 
     public Long getId() {
@@ -67,11 +65,4 @@ public class CommentDTO {
         this.user = user;
     }
 
-    public Long getCommentsCounter() {
-        return commentsCounter;
-    }
-
-    public void setCommentsCounter(Long commentsCounter) {
-        this.commentsCounter = commentsCounter;
-    }
 }
