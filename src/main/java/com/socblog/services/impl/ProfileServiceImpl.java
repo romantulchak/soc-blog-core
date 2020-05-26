@@ -1,8 +1,6 @@
 package com.socblog.services.impl;
 
-import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
-import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
 import com.socblog.models.Image;
 import com.socblog.models.Notification;
@@ -14,25 +12,19 @@ import com.socblog.repo.UserRepo;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -41,32 +33,29 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
-    private NotificationBoxRepo notificationBoxRepo;
-    private NotificationRepo notificationRepo;
+    private final NotificationBoxRepo notificationBoxRepo;
+    private final NotificationRepo notificationRepo;
 
-
-    private ModelMapper modelMapper;
-
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
     @Value("${upload.path}")
     private String uploadPath;
 
     @Value("${upload.path.avatarFull}")
     private String fullUploadPath;
 
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
     public ProfileServiceImpl(UserRepo userRepo,
                               SimpMessagingTemplate simpMessagingTemplate,
                               NotificationBoxRepo notificationBoxRepo,
-                              NotificationRepo notificationRepo,
-                              ModelMapper modelMapper){
+                              NotificationRepo notificationRepo
+                              ){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.notificationBoxRepo = notificationBoxRepo;
         this.notificationRepo = notificationRepo;
-        this.modelMapper = modelMapper;
+
 
     }
 
@@ -165,12 +154,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
 
-    public List<UserDTO>users(){
-      return userRepo.users();
-    }
-    public UserDTO userById(User user, User userInSystem){
-        System.out.println(user + " " + userInSystem);
 
+
+    public UserDTO userById(User user, User userInSystem){
         return new UserDTO(user, userInSystem);
     }
 
@@ -182,4 +168,8 @@ public class ProfileServiceImpl implements ProfileService {
             this.userRepo.save(user);
         }
     }
+    public List<UserDTO>users(){
+        return userRepo.users();
+    }
+
 }

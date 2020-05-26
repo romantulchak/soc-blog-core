@@ -114,9 +114,7 @@ public class ProfileController {
     @SendTo("/topic/online")
     @Scheduled(fixedDelay = 1000)
     public UserOnlineUtils setOnline(boolean isOnline, @DestinationVariable Long userId){
-        System.out.println(isOnline);
         profileService.setOnline(userId,isOnline);
-
         return new UserOnlineUtils(userId,isOnline);
     }
 

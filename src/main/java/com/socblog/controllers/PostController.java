@@ -1,7 +1,6 @@
 package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.gson.Gson;
 import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
@@ -10,10 +9,11 @@ import com.socblog.models.User;
 import com.socblog.models.Views;
 import com.socblog.services.impl.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,13 +40,20 @@ public class PostController {
     }
 
 
-    @GetMapping("/myPosts/{userId}")
+    @GetMapping("/myPosts/{userId}/{currentUserId}")
     @PreAuthorize("hasRole('USER')")
     @JsonView(Views.PostFull.class)
-    public PostPageableDTO myPosts(@PathVariable("userId")User user, @RequestParam(value = "page", defaultValue = "0") int page){
-        System.out.println(user.getId());
-        return postService.getAllForUser(user, page);
+    public PostPageableDTO myPosts(@PathVariable("userId")User user, @RequestParam(value = "page", defaultValue = "0") int page, @PathVariable("currentUserId") User currentUser){
+        return postService.getAllForUser(user, page, currentUser);
     }
+
+    @DeleteMapping("/deletePost/{postId}/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> deletePost(@PathVariable("postId") Post post, @PathVariable("userId") User user){
+        return postService.deletePost(post, user);
+
+    }
+
 
     @GetMapping("/news/{userId}")
     @PreAuthorize("hasRole('USER')")
@@ -55,11 +62,11 @@ public class PostController {
         return postService.getAllPost(user, page);
     }
 
-    @GetMapping("/postsByTag/{tagName}")
+    @GetMapping("/postsByTag/{tagName}/{userId}")
     @PreAuthorize("hasRole('USER')")
     @JsonView(Views.PostFull.class)
-    public PostPageableDTO postsByTag(@PathVariable("tagName") String tagName, @RequestParam(value = "page", defaultValue = "0") int page){
-        return postService.getPostsByTag(tagName, page);
+    public PostPageableDTO postsByTag(@PathVariable("tagName") String tagName, @RequestParam(value = "page", defaultValue = "0") int page, @PathVariable("userId") User currentUser){
+        return postService.getPostsByTag(tagName, page, currentUser);
 
     }
 
@@ -76,6 +83,9 @@ public class PostController {
         return postService.getPostsBy(post);
     }
 
-
-
+    @MessageMapping("/updatePost/")
+    @SendTo("/topic/updatePost")
+    public Long currentUser(Long id){
+        return id;
+    }
 }

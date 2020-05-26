@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PostPageableDTO {
     @JsonView(Views.PostFull.class)
-    private List<Post> posts;
+    private List<PostDTO> posts;
 
     @JsonView(Views.PostFull.class)
     private int currentPage;
@@ -16,7 +16,7 @@ public class PostPageableDTO {
     @JsonView(Views.PostFull.class)
     private int totalPages;
 
-    public PostPageableDTO(List<Post> posts, int currentPage, int totalPages) {
+    public PostPageableDTO(List<PostDTO> posts, int currentPage, int totalPages) {
         this.posts = posts;
         this.currentPage = currentPage;
         this.totalPages = totalPages;
@@ -25,11 +25,11 @@ public class PostPageableDTO {
     public PostPageableDTO() {
     }
 
-    public List<Post> getPosts() {
+    public List<PostDTO> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(List<PostDTO> posts) {
         this.posts = posts;
     }
 

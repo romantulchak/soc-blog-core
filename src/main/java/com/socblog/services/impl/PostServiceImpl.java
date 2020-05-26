@@ -7,10 +7,8 @@ import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
 import com.socblog.models.User;
 import com.socblog.repo.PostRepo;
-import com.socblog.repo.TagRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.PostService;
-import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
 import com.socblog.utils.UserLevelUp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +18,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -35,18 +33,12 @@ public class PostServiceImpl implements PostService {
     @Value("${upload.path.post}")
     private String path;
 
-    private PostRepo postRepo;
-    private TagRepo tagRepo;
-    private UserRepo userRepo;
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final PostRepo postRepo;
+    private final UserRepo userRepo;
     @Autowired
     public PostServiceImpl(PostRepo postRepo,
-                           TagRepo tagRepo,
-                           SimpMessagingTemplate simpMessagingTemplate,
                            UserRepo userRepo){
         this.postRepo = postRepo;
-        this.tagRepo = tagRepo;
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.userRepo = userRepo;
     }
 
@@ -55,14 +47,29 @@ public class PostServiceImpl implements PostService {
     public PostPageableDTO getAllPost(User user, int page) {
         Pageable pageable = PageRequest.of(page, 5);
         Page<Post> posts = postRepo.findAllBySubscriptions(user.getSubscriptions(), pageable);
-        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
+        List<PostDTO> postDTOS = posts.stream().map(x->postDTOS(user, x)).collect(Collectors.toList());
+        return new PostPageableDTO(postDTOS, pageable.getPageNumber(), posts.getTotalPages());
+    }
+
+    private PostDTO postDTOS(User currentUser, Post post){
+        PostDTO postDTO = new PostDTO(post);
+        if(isContains(currentUser,post.getLikes())){
+            postDTO.setMeLiked(true);
+        }
+        return postDTO;
     }
 
     @Override
-    public PostPageableDTO getAllForUser(User user, int page) {
+    public PostPageableDTO getAllForUser(User user, int page, User currentUser) {
         Pageable pageable = PageRequest.of(page, 6 );
         Page<Post> posts = postRepo.findAllForUser(user, pageable);
-        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
+        List<PostDTO> postDTOS = posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList());
+        return new PostPageableDTO(postDTOS, pageable.getPageNumber(), posts.getTotalPages());
+    }
+
+
+    private boolean isContains(User user, Set<User> likes){
+        return likes.contains(user);
     }
 
     @Override
@@ -75,7 +82,6 @@ public class PostServiceImpl implements PostService {
         User user = userRepo.findById(post.getUser().getId()).orElse(null);
         assert user != null : "user is null";
         userRepo.save(new UserLevelUp().levelUpByPost(user, post));
-        simpMessagingTemplate.convertAndSend("/topic/update", new PostMessage("updatePosts", postDTO.getUser().getId()));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
     @Override
@@ -83,16 +89,22 @@ public class PostServiceImpl implements PostService {
         return null;
     }
     @Override
-    public ResponseEntity<?> deletePost(Post post) {
-        return null;
+    public ResponseEntity<?> deletePost(Post post, User user) {
+        if(post.getUser().equals(user)){
+            postRepo.delete(post);
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Something wrong", HttpStatus.OK);
+        }
     }
 
 
     @Override
-    public PostPageableDTO getPostsByTag(String tagName, int page) {
+    public PostPageableDTO getPostsByTag(String tagName, int page, User currentUser) {
         Pageable pageable = PageRequest.of(page, 2);
         Page<Post> posts = postRepo.findPostsByTagName(tagName, pageable);
-        return new PostPageableDTO(posts.toList(), pageable.getPageNumber(), posts.getTotalPages());
+        List<PostDTO> postDTOS = posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList());
+        return new PostPageableDTO(postDTOS, pageable.getPageNumber(), posts.getTotalPages());
     }
 
     @Override

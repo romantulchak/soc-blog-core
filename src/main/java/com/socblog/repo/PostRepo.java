@@ -19,7 +19,7 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
 
 
-    @Query(value = "SELECT p FROM Post p where p.user = ?1 order by p.createdDate DESC ")
+    @Query(value = "SELECT p FROM Post p where p.user = ?1 order by p.id DESC ")
     Page<Post> findAllForUser(User user, Pageable pageable);
 
 

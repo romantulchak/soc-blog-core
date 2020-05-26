@@ -1,7 +1,6 @@
 package com.socblog.services.impl;
 
 import com.socblog.dto.TagDTO;
-import com.socblog.models.Post;
 import com.socblog.models.Tag;
 import com.socblog.models.User;
 import com.socblog.repo.TagRepo;
@@ -17,8 +16,8 @@ import java.util.List;
 
 @Service
 public class TagServiceImpl implements TagService {
-    private TagRepo tagRepo;
-    private UserRepo userRepo;
+    private final TagRepo tagRepo;
+    private final UserRepo userRepo;
 
     @Autowired
     public TagServiceImpl(TagRepo tagRepo, UserRepo userRepo){
@@ -33,7 +32,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public ResponseEntity<?> createTag(Tag tag, User user) {
-
         if(tag.getName() != null && !tagRepo.existsByName(tag.getName())){
             tagRepo.save(tag);
             this.userRepo.save(new UserLevelUp().levelUpByTag(user));

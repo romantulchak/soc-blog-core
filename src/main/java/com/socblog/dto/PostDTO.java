@@ -9,6 +9,7 @@ import com.socblog.models.Views;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class PostDTO {
     @JsonView(Views.PostFull.class)
@@ -33,8 +34,15 @@ public class PostDTO {
     @JsonView(Views.PostFull.class)
     private String smallDescription;
 
+    @JsonView(Views.PostFull.class)
+    private Set<User> likes;
+
+    @JsonView(Views.PostFull.class)
+    private boolean meLiked;
 
 
+    public PostDTO() {
+    }
 
     public PostDTO(Post post) {
         this.id = post.getId();
@@ -45,6 +53,8 @@ public class PostDTO {
         this.image = post.getImagePath();
         this.createdDate = LocalDate.now();
         this.smallDescription = post.getSmallDescription();
+        this.likes = post.getLikes();
+
     }
 
     public String getName() {
@@ -109,5 +119,21 @@ public class PostDTO {
 
     public void setSmallDescription(String smallDescription) {
         this.smallDescription = smallDescription;
+    }
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
+    }
+
+    public boolean isMeLiked() {
+        return meLiked;
+    }
+
+    public void setMeLiked(boolean meLiked) {
+        this.meLiked = meLiked;
     }
 }
