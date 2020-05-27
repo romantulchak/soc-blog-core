@@ -9,6 +9,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,12 +28,11 @@ public class Post {
     @JsonView({Views.UserFull.class,Views.PostFull.class})
     private String text;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "posts_tags",
                 joinColumns = @JoinColumn(name = "post_id"),
                 inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-
     @JsonView({Views.UserFull.class, Views.PostFull.class})
     private List<Tag> tags = new ArrayList<>();
 
@@ -56,13 +56,13 @@ public class Post {
     private List<Comment> comments;
 
 
-    @ManyToMany
-    @JoinTable(name = "user_likes",
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "post_likes",
                 joinColumns = @JoinColumn(name = "post_id"),
                 inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @JsonView(Views.PostFull.class)
-    private Set<User> likes;
+    private Set<User> likes = new HashSet<>();
 
     public Post(){
 
@@ -159,4 +159,5 @@ public class Post {
     public void setLikes(Set<User> likes) {
         this.likes = likes;
     }
+
 }

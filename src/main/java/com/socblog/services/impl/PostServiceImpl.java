@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,11 +36,15 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepo postRepo;
     private final UserRepo userRepo;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     public PostServiceImpl(PostRepo postRepo,
-                           UserRepo userRepo){
+                           UserRepo userRepo,
+                           SimpMessagingTemplate simpMessagingTemplate
+                           ){
         this.postRepo = postRepo;
         this.userRepo = userRepo;
+        this.simpMessagingTemplate =simpMessagingTemplate;
     }
 
 
@@ -77,11 +82,11 @@ public class PostServiceImpl implements PostService {
         Gson g = new Gson();
         PostDTO postDTO = g.fromJson(postString, PostDTO.class);
         Post post = new Post(postDTO, FileSaver.saveFile(file, path,"posts_images"));
-
         postRepo.save(post);
         User user = userRepo.findById(post.getUser().getId()).orElse(null);
         assert user != null : "user is null";
         userRepo.save(new UserLevelUp().levelUpByPost(user, post));
+        simpMessagingTemplate.convertAndSend( "/topic/updatePost", postDTOS(user, post));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
     @Override
@@ -92,6 +97,7 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<?> deletePost(Post post, User user) {
         if(post.getUser().equals(user)){
             postRepo.delete(post);
+            simpMessagingTemplate.convertAndSend( "/topic/updatePost/delete", user.getId());
             return new ResponseEntity<>("Ok", HttpStatus.OK);
         }else{
             return new ResponseEntity<>("Something wrong", HttpStatus.OK);
@@ -120,6 +126,26 @@ public class PostServiceImpl implements PostService {
         return new PostDTO(post);
     }
 
-
-
+    /**
+     * Set/remove like  for post
+     * @param postId - current post
+     * @param currentUserId - user in system
+     * @return - if current user isn't in post likes - add him
+     * else remove him
+     */
+    @Override
+    public PostDTO setLike(Long postId, Long currentUserId) {
+        User currentUser = userRepo.findById(currentUserId).orElse(null);
+        Post post = postRepo.findById(postId).orElse(null);
+        if(post != null && currentUser != null){
+            if(isContains(currentUser, post.getLikes())){
+                post.getLikes().remove(currentUser);
+            }else{
+                post.getLikes().add(currentUser);
+            }
+            postRepo.save(post);
+            simpMessagingTemplate.convertAndSend("/topic/myLike/", currentUserId);
+        }
+        return postDTOS(currentUser, post);
+    }
 }

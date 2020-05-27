@@ -11,6 +11,7 @@ import com.socblog.services.impl.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -54,7 +55,6 @@ public class PostController {
 
     }
 
-
     @GetMapping("/news/{userId}")
     @PreAuthorize("hasRole('USER')")
     @JsonView(Views.PostFull.class)
@@ -83,9 +83,11 @@ public class PostController {
         return postService.getPostsBy(post);
     }
 
-    @MessageMapping("/updatePost/")
-    @SendTo("/topic/updatePost")
-    public Long currentUser(Long id){
-        return id;
+    @MessageMapping("/setLike/{currentUserId}/{postId}")
+    @SendTo("/topic/like/")
+    @JsonView(Views.PostFull.class)
+    public PostDTO setLike(@DestinationVariable("currentUserId")Long currentUser, @DestinationVariable("postId") Long post){
+        return postService.setLike(post, currentUser);
     }
+
 }

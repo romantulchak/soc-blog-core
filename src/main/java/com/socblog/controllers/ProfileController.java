@@ -110,12 +110,6 @@ public class ProfileController {
         return profileService.readNotification(notificationBox, notification);
     }
 
-    @MessageMapping("/setOnline/{userId}")
-    @SendTo("/topic/online")
-    @Scheduled(fixedDelay = 1000)
-    public UserOnlineUtils setOnline(boolean isOnline, @DestinationVariable Long userId){
-        profileService.setOnline(userId,isOnline);
-        return new UserOnlineUtils(userId,isOnline);
-    }
+
 
 }

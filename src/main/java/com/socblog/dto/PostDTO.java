@@ -40,6 +40,8 @@ public class PostDTO {
     @JsonView(Views.PostFull.class)
     private boolean meLiked;
 
+    @JsonView(Views.PostFull.class)
+    private int likesCounter;
 
     public PostDTO() {
     }
@@ -54,6 +56,7 @@ public class PostDTO {
         this.createdDate = LocalDate.now();
         this.smallDescription = post.getSmallDescription();
         this.likes = post.getLikes();
+        this.likesCounter = post.getLikes().size();
 
     }
 
@@ -133,7 +136,16 @@ public class PostDTO {
         return meLiked;
     }
 
+
     public void setMeLiked(boolean meLiked) {
         this.meLiked = meLiked;
+    }
+
+    public int getLikesCounter() {
+        return likesCounter;
+    }
+
+    public void setLikesCounter(int likesCounter) {
+        this.likesCounter = likesCounter;
     }
 }

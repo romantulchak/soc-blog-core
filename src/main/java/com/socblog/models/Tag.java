@@ -20,7 +20,7 @@ public class Tag {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
     private List<Post> posts;
 
     public Tag(){

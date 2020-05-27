@@ -21,4 +21,5 @@ public interface PostService {
     PostPageableDTO getPostsByTag(String tagName, int page, User currentUser);
     List<PostByDateDTO> getPostsForChart(User user);
     PostDTO getPostsBy(Post post);
+    PostDTO setLike(Long postId, Long currentUserId);
 }
