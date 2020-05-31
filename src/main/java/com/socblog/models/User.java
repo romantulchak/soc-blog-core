@@ -1,6 +1,7 @@
 package com.socblog.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -16,6 +17,7 @@ import java.util.*;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
+@Transactional
 public class User {
 
     @Id
@@ -25,7 +27,7 @@ public class User {
 
     @NotBlank
     @Size(max = 25, min = 3)
-    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class, Views.NotificationFull.class})
     private String username;
 
     @NotBlank
@@ -38,7 +40,7 @@ public class User {
     @Size(max = 120, min = 6)
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "user_roles",
                 joinColumns = @JoinColumn(name ="user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id")
@@ -68,7 +70,7 @@ public class User {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String country;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class, Views.NotificationFull.class})
     private String avatar;
 
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
@@ -107,7 +109,7 @@ public class User {
 
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_subscribtion",
             joinColumns = @JoinColumn(name="channel_id"),
@@ -117,7 +119,8 @@ public class User {
     private Set<User> subscribers = new HashSet<>();
 
 
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_subscribtion",
             joinColumns = @JoinColumn(name="subscriber_id"),
@@ -367,14 +370,6 @@ public class User {
         isOnline = online;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                username.equals(user.username);
-    }
 
     @Override
     public int hashCode() {

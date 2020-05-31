@@ -10,7 +10,7 @@ public class NotificationBox {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.UserFull.class)
+    @JsonView({Views.UserFull.class, Views.NotificationFull.class})
     private Long id;
 
     @OneToOne

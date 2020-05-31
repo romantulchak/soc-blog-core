@@ -1,24 +1,52 @@
 package com.socblog.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.models.Notification;
 import com.socblog.models.User;
+import com.socblog.models.Views;
+import com.socblog.models.enums.ENotification;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class NotificationDTO {
 
+
+    @JsonView(Views.NotificationFull.class)
     private Long id;
-    private List<Notification> notifications;
-    private int notificationCounter;
-    private User user;
+
+    @JsonView(Views.NotificationFull.class)
+    private UserDTO user;
+
+    @JsonView(Views.NotificationFull.class)
+    private String message;
+
+    @JsonView(Views.NotificationFull.class)
+    private Boolean isRead;
+
+    @JsonView(Views.NotificationFull.class)
+    @Enumerated(EnumType.STRING)
+    private ENotification eNotification;
+
+    @JsonView(Views.NotificationFull.class)
+    private LocalDateTime dateTime;
 
 
-    public NotificationDTO(){
+
+    public  NotificationDTO(){
 
     }
 
-
-
+    public NotificationDTO(Notification notification, UserDTO user) {
+        this.id = notification.getId();
+        this.user = user;
+        this.message = notification.getMessage();
+        this.isRead = notification.getRead();
+        this.eNotification = notification.geteNotification();
+        this.dateTime = notification.getDateTime();
+    }
 
     public Long getId() {
         return id;
@@ -28,27 +56,52 @@ public class NotificationDTO {
         this.id = id;
     }
 
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
 
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
-    }
-
-    public int getNotificationCounter() {
-        return notificationCounter;
-    }
-
-    public void setNotificationCounter(int notificationCounter) {
-        this.notificationCounter = notificationCounter;
-    }
-
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Boolean getRead() {
+        return isRead;
+    }
+
+    public void setRead(Boolean read) {
+        isRead = read;
+    }
+
+    public ENotification geteNotification() {
+        return eNotification;
+    }
+
+    public void seteNotification(ENotification eNotification) {
+        this.eNotification = eNotification;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationDTO{" +
+                "id=" + id +
+                ", user=" + user +
+                '}';
     }
 }

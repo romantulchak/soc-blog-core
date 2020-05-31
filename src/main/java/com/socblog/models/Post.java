@@ -2,6 +2,7 @@ package com.socblog.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.dto.PostDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Transactional
 public class Post {
 
     @Id

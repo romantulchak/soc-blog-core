@@ -6,4 +6,5 @@ public class Views {
     public interface UserSubscribeFull{}
     public interface TagFull{}
     public interface CommentFull{}
+    public interface NotificationFull{}
 }

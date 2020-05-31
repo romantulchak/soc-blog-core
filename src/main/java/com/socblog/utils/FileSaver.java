@@ -14,10 +14,11 @@ public class FileSaver {
 
     public static String saveFile(MultipartFile file, String fullUploadPath, String pathToReturn) throws IOException {
         if(file != null){
-            String fileOriginalName = UUID.randomUUID() + "." + file.getOriginalFilename();
+            String fileOriginalName = UUID.randomUUID() + "." + file.getOriginalFilename().replace(" ", "");
             String filePath = fullUploadPath + "/" + fileOriginalName;
             Path copyLocation = Paths.get(filePath);
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("SIZE:  = " + file.getSize());
             return "http://localhost:8080/" + pathToReturn + "/" + fileOriginalName;
         }
         return null;

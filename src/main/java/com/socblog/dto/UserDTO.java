@@ -12,10 +12,10 @@ import java.util.Set;
 
 public class UserDTO {
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.NotificationFull.class})
     private Long id;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.NotificationFull.class})
     private String username;
 
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
@@ -36,7 +36,7 @@ public class UserDTO {
     @JsonView(Views.UserFull.class)
     private LocalDate birthDay;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.NotificationFull.class})
     private String avatar;
 
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
@@ -63,7 +63,7 @@ public class UserDTO {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private long postsCounter;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.NotificationFull.class})
     private Boolean isSubscribe;
 
     @JsonView(Views.UserFull.class)
@@ -117,6 +117,7 @@ public class UserDTO {
         this.createdUser = user.getCreatedUser();
         this.isOnline = user.isOnline();
     }
+
 
 
     public UserDTO(User user, User userInSystem){
@@ -348,5 +349,14 @@ public class UserDTO {
 
     public void setCreatedUser(LocalDate createdUser) {
         this.createdUser = createdUser;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "username='" + username + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", isSubscribe=" + isSubscribe +
+                '}';
     }
 }

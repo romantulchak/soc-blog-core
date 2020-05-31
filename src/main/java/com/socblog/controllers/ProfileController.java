@@ -83,6 +83,8 @@ public class ProfileController {
     }
 
 
+
+
     @PutMapping("/stopFollowing/{userId}/{currentUserById}")
     public ResponseEntity<?> stopFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
         return profileService.stopFollowing(user, currentUser);
@@ -99,7 +101,7 @@ public class ProfileController {
         return profileService.getSubscribers(user, currentUser);
     }
     @GetMapping("/getNotificationsForUser/{userId}")
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     public NotificationBoxDTO getNotificationsForUser(@PathVariable("userId") User user){
         return profileService.getNotificationsForUser(user);
     }

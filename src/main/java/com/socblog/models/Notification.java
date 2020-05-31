@@ -1,8 +1,10 @@
 package com.socblog.models;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.socblog.models.enums.ENotification;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Notification {
@@ -10,31 +12,40 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     private Long id;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     private String message;
 
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     private Boolean isRead;
-
 
     @ManyToOne
     private NotificationBox notificationBox;
 
     @ManyToOne
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     private User user;
+
+    @JsonView(Views.NotificationFull.class)
+    @Enumerated(EnumType.STRING)
+    private ENotification eNotification;
+
+    @JsonView(Views.NotificationFull.class)
+    private LocalDateTime dateTime;
 
     public Notification() {
     }
 
-    public Notification(String message, NotificationBox notificationBox, User user) {
+    public Notification(String message, NotificationBox notificationBox, User user, ENotification eNotification) {
+
         this.message = message;
         this.isRead = false;
         this.notificationBox = notificationBox;
         this.user = user;
+        this.eNotification = eNotification;
+        this.dateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -75,5 +86,21 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void seteNotification(ENotification eNotification) {
+        this.eNotification = eNotification;
+    }
+
+    public ENotification geteNotification() {
+        return eNotification;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

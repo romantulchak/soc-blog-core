@@ -11,22 +11,34 @@ import java.util.stream.Collectors;
 
 public class NotificationBoxDTO {
 
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
     private Long id;
 
-    @JsonView(Views.UserFull.class)
     private List<Notification> notifications;
-
-    @JsonView(Views.UserFull.class)
+    @JsonView(Views.NotificationFull.class)
+    private List<NotificationDTO> notificationDTOS;
+    @JsonView(Views.NotificationFull.class)
     private Long notificationCounter;
 
 
+    public NotificationBoxDTO() {
+    }
+
     public NotificationBoxDTO(NotificationBox notificationBox) {
         this.id = notificationBox.getId();
-        this.notifications = notificationBox.getNotifications();
-        Collections.reverse(this.notifications);
-        this.notificationCounter = notificationBox.getNotifications().stream().filter(x->!x.getRead()).count();
+        this.notifications = notificationBox.getNotifications().stream().limit(100).collect(Collectors.toList());
+
     }
+
+    public NotificationBoxDTO(NotificationBoxDTO notificationBoxDTO, List<NotificationDTO> notificationDTO){
+        this.id = notificationBoxDTO.getId();
+        this.notificationDTOS = notificationDTO.stream().limit(100).collect(Collectors.toList());
+        Collections.reverse(this.notificationDTOS);
+        this.notificationCounter = notificationDTOS.stream().filter(x->!x.getRead()).count();
+    }
+
+
+
 
     public Long getId() {
         return id;
@@ -50,5 +62,13 @@ public class NotificationBoxDTO {
 
     public void setNotificationCounter(Long notificationCounter) {
         this.notificationCounter = notificationCounter;
+    }
+
+    public List<NotificationDTO> getNotificationDTOS() {
+        return notificationDTOS;
+    }
+
+    public void setNotificationDTOS(List<NotificationDTO> notificationDTOS) {
+        this.notificationDTOS = notificationDTOS;
     }
 }

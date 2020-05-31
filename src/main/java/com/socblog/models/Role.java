@@ -1,10 +1,12 @@
 package com.socblog.models;
 
 import com.socblog.models.enums.ERole;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 
 @Entity
+@Transactional
 public class Role {
 
     @Id

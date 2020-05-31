@@ -1,11 +1,13 @@
 package com.socblog.services.impl;
 
 import com.socblog.dto.NotificationBoxDTO;
+import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
 import com.socblog.models.Image;
 import com.socblog.models.Notification;
 import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
+import com.socblog.models.enums.ENotification;
 import com.socblog.repo.NotificationBoxRepo;
 import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
@@ -14,6 +16,7 @@ import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -104,7 +107,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<?> startFollowing(User user, User currentUser) {
         if(user != null && currentUser != null) {
             currentUser.getSubscriptions().add(user);
-            Notification notification = new Notification("Start following", user.getNotificationBox(), currentUser);
+            Notification notification = new Notification("started following you.", user.getNotificationBox(), currentUser, ENotification.START_FOLLOWING);
             userRepo.save(currentUser);
             notificationRepo.save(notification);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
@@ -143,7 +146,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public NotificationBoxDTO getNotificationsForUser(User user) {
-        return notificationBoxRepo.fin(user.getNotificationBox());
+        NotificationBoxDTO notificationBoxDTO = notificationBoxRepo.fin(user.getNotificationBox());
+        List<NotificationDTO> notificationDTOS = notificationBoxDTO.getNotifications().stream().map(x->coNotificationDTO(x, user)).collect(Collectors.toList());
+        return new NotificationBoxDTO(notificationBoxDTO, notificationDTOS);
+    }
+    private NotificationDTO coNotificationDTO(Notification notification, User currentUser){
+        return new NotificationDTO(notification, new UserDTO(notification.getUser(), currentUser));
     }
 
     @Override
@@ -153,12 +161,10 @@ public class ProfileServiceImpl implements ProfileService {
         return notificationBoxRepo.fin(notificationBox);
     }
 
-
-
-
     public UserDTO userById(User user, User userInSystem){
         return new UserDTO(user, userInSystem);
     }
+
 
     @Override
     public void setOnline(Long userId, boolean isOnline) {
