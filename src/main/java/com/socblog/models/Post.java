@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Transactional
 public class Post {
 
     @Id

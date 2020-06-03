@@ -43,6 +43,13 @@ public class UserLevelUp {
     private double upCurrentExperience(User user){
         return (user.getExperienceToNextLevel() + 50)*1.2;
     }
-
+    public User levelUpByLike(User user){
+        if(user != null){
+            double numberOfChars = 50;
+            user.setCurrentExperience(user.getCurrentExperience() + (numberOfChars * ELevelUpOptions.LEVEL_UP_BY_LIKE.getCoefficient()));
+            upLvl(user);
+        }
+        return user;
+    }
 
 }

@@ -141,8 +141,11 @@ public class PostServiceImpl implements PostService {
             if(isContains(currentUser, post.getLikes())){
                 post.getLikes().remove(currentUser);
             }else{
+               userRepo.save(new UserLevelUp().levelUpByLike(currentUser));
                 post.getLikes().add(currentUser);
+
             }
+
             postRepo.save(post);
             simpMessagingTemplate.convertAndSend("/topic/myLike/", currentUserId);
         }
