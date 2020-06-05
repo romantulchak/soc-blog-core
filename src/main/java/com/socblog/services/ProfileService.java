@@ -24,4 +24,5 @@ public interface ProfileService {
     NotificationBoxDTO getNotificationsForUser(User user);
     NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification);
     void setOnline(Long userId, boolean isOnline);
+    List<UserDTO> explorePeople(User user);
 }

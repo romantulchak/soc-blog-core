@@ -59,15 +59,12 @@ public class ProfileController {
         return profileService.updateUserData(user);
     }
 
-    @GetMapping("/users")
-    @JsonView(Views.UserFull.class)
-    public List<UserDTO> users(){
-        return profileService.users();
-    }
+
 
     @GetMapping("/userById/{userId}/{currentUserById}")
     @JsonView(Views.UserFull.class)
     public UserDTO userById(@PathVariable("userId") User user, @PathVariable("currentUserById") User userInSystem){
+
         return profileService.userById(user,userInSystem);
     }
 
@@ -83,6 +80,12 @@ public class ProfileController {
     }
 
 
+    @GetMapping("/explore/{userId}")
+    @JsonView(Views.UserFull.class)
+    public List<UserDTO> explorePeople(@PathVariable("userId") User user){
+      return  profileService.explorePeople(user);
+
+    }
 
 
     @PutMapping("/stopFollowing/{userId}/{currentUserById}")

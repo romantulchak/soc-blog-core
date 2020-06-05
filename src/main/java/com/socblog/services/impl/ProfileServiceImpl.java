@@ -3,11 +3,9 @@ package com.socblog.services.impl;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
-import com.socblog.models.Image;
-import com.socblog.models.Notification;
-import com.socblog.models.NotificationBox;
-import com.socblog.models.User;
+import com.socblog.models.*;
 import com.socblog.models.enums.ENotification;
+import com.socblog.models.enums.ERole;
 import com.socblog.repo.NotificationBoxRepo;
 import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
@@ -28,9 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -174,8 +170,10 @@ public class ProfileServiceImpl implements ProfileService {
             this.userRepo.save(user);
         }
     }
-    public List<UserDTO>users(){
-        return userRepo.users();
-    }
 
+    @Override
+    public List<UserDTO> explorePeople(User user) {
+        List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
+        return users.stream().map(x->convertToDto(x, user)).limit(25).collect(Collectors.toList());
+    }
 }

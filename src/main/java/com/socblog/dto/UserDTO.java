@@ -121,7 +121,6 @@ public class UserDTO {
 
 
     public UserDTO(User user, User userInSystem){
-
         this.id = user.getId();
         this.username =user.getUsername();
         this.email = user.getEmail();
@@ -351,12 +350,4 @@ public class UserDTO {
         this.createdUser = createdUser;
     }
 
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "username='" + username + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", isSubscribe=" + isSubscribe +
-                '}';
-    }
 }
