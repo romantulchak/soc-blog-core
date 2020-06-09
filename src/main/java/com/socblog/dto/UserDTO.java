@@ -1,12 +1,10 @@
 package com.socblog.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.socblog.models.Image;
-import com.socblog.models.Post;
-import com.socblog.models.User;
-import com.socblog.models.Views;
+import com.socblog.models.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,7 +82,8 @@ public class UserDTO {
     @JsonView(Views.UserFull.class)
     private boolean isOnline;
 
-
+    @JsonView(Views.UserFull.class)
+    private Set<Tag> interests;
 
     public UserDTO(){
 
@@ -116,6 +115,7 @@ public class UserDTO {
         this.experienceToNextLevel = user.getExperienceToNextLevel();
         this.createdUser = user.getCreatedUser();
         this.isOnline = user.isOnline();
+        this.interests = user.getInterests();
     }
 
 
@@ -146,6 +146,7 @@ public class UserDTO {
         this.experienceToNextLevel = user.getExperienceToNextLevel();
         this.createdUser = user.getCreatedUser();
         this.isOnline = user.isOnline();
+        this.interests = user.getInterests();
     }
 
 
@@ -350,4 +351,19 @@ public class UserDTO {
         this.createdUser = createdUser;
     }
 
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
+    public Set<Tag> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(Set<Tag> interests) {
+        this.interests = interests;
+    }
 }

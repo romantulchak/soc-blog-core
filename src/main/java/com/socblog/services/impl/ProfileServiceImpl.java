@@ -174,6 +174,21 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<UserDTO> explorePeople(User user) {
         List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
-        return users.stream().map(x->convertToDto(x, user)).limit(25).collect(Collectors.toList());
+        return users.stream().map(x->convertToDto(x, user)).limit(10).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseEntity<?> addInterests(Tag tag, User user) {
+        if(user != null && tag != null){
+           if(user.getInterests().contains(tag)){
+               user.getInterests().remove(tag) ;
+           }else{
+               user.getInterests().add(tag);
+            }
+            userRepo.save(user);
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+
+        }
+        return new ResponseEntity<>("Something wrong", HttpStatus.OK);
     }
 }

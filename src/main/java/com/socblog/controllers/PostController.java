@@ -76,11 +76,11 @@ public class PostController {
     public List<PostByDateDTO> postsForChart(@PathVariable("userId")User user){
         return postService.getPostsForChart(user);
     }
-    @GetMapping("/getPostById/{postId}")
+    @GetMapping("/getPostById/{postId}/{userId}")
     @PreAuthorize("hasRole('USER')")
     @JsonView(Views.PostFull.class)
-    public PostDTO getPostById(@PathVariable("postId") Post post){
-        return postService.getPostsBy(post);
+    public PostDTO getPostById(@PathVariable("postId") Post post, @PathVariable("userId") User user){
+        return postService.getPostsBy(post, user);
     }
 
     @MessageMapping("/setLike/{currentUserId}/{postId}")
@@ -90,4 +90,10 @@ public class PostController {
         return postService.setLike(post, currentUser);
     }
 
+    @GetMapping("/explorePosts/{currentUserId}")
+    @PreAuthorize("hasRole('USER')")
+    @JsonView(Views.PostFull.class)
+    public PostPageableDTO explorePosts(@PathVariable("currentUserId") User user, @RequestParam(value = "page", defaultValue = "0") int page){
+        return postService.explorePosts(user, page);
+    }
 }

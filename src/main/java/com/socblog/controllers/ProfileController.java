@@ -5,10 +5,7 @@ import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
-import com.socblog.models.Notification;
-import com.socblog.models.NotificationBox;
-import com.socblog.models.User;
-import com.socblog.models.Views;
+import com.socblog.models.*;
 import com.socblog.services.impl.ProfileServiceImpl;
 import com.socblog.utils.UserOnlineUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +112,9 @@ public class ProfileController {
         return profileService.readNotification(notificationBox, notification);
     }
 
-
+    @PutMapping("/addInterests/{userId}")
+    public ResponseEntity<?> addInterests(@RequestBody Tag tag, @PathVariable("userId") User user){
+        return profileService.addInterests(tag, user);
+    }
 
 }

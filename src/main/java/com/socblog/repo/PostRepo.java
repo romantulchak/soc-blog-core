@@ -1,8 +1,8 @@
 package com.socblog.repo;
 
 import com.socblog.dto.PostByDateDTO;
-import com.socblog.dto.PostDTO;
 import com.socblog.models.Post;
+import com.socblog.models.Tag;
 import com.socblog.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +34,8 @@ public interface PostRepo extends JpaRepository<Post, Long> {
    @Query(value = "SELECT new com.socblog.dto.PostByDateDTO(p.createdDate, count (p)) FROM Post p where p.user = :user group by p.createdDate")
    List<PostByDateDTO> postsByDate(@Param("user")User user);
 
+
+    @Query(value = "SELECT p FROM Post p left join p.tags t where p.user <> :user and t in :userInterests")
+    Page<Post> findPostsDto(@Param("userInterests")Set<Tag> tags, @Param("user") User user, Pageable pageable);
 
 }

@@ -46,7 +46,7 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(Post post) {
+    public PostDTO(Post post, User currentUser) {
         this.id = post.getId();
         this.name = post.getName();
         this.text = post.getText();
@@ -57,7 +57,7 @@ public class PostDTO {
         this.smallDescription = post.getSmallDescription();
         this.likes = post.getLikes();
         this.likesCounter = post.getLikes().size();
-
+        this.meLiked = this.likes.contains(currentUser);
     }
 
     public String getName() {

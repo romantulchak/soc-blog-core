@@ -4,7 +4,9 @@ import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
 import com.socblog.models.Post;
+import com.socblog.models.Tag;
 import com.socblog.models.User;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,7 @@ public interface PostService {
     ResponseEntity<?> deletePost(Post post, User user);
     PostPageableDTO getPostsByTag(String tagName, int page, User currentUser);
     List<PostByDateDTO> getPostsForChart(User user);
-    PostDTO getPostsBy(Post post);
+    PostDTO getPostsBy(Post post, User user);
     PostDTO setLike(Long postId, Long currentUserId);
+    PostPageableDTO explorePosts(User currentUser, int page);
 }

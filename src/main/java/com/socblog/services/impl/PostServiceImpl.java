@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,11 +58,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostDTO postDTOS(User currentUser, Post post){
-        PostDTO postDTO = new PostDTO(post);
-        if(isContains(currentUser,post.getLikes())){
-            postDTO.setMeLiked(true);
-        }
-        return postDTO;
+        return new PostDTO(post, currentUser);
     }
 
     @Override
@@ -122,8 +119,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO getPostsBy(Post post) {
-        return new PostDTO(post);
+    public PostDTO getPostsBy(Post post, User user) {
+        return new PostDTO(post, user);
     }
 
     /**
@@ -150,5 +147,12 @@ public class PostServiceImpl implements PostService {
             simpMessagingTemplate.convertAndSend("/topic/myLike/", currentUserId);
         }
         return postDTOS(currentUser, post);
+    }
+
+    @Override
+    public PostPageableDTO explorePosts(User currentUser, int page) {
+        Pageable pageable = PageRequest.of(page, 1);
+        Page<Post> posts = postRepo.findPostsDto(currentUser.getInterests(), currentUser, pageable);
+        return new PostPageableDTO(posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList()), pageable.getPageNumber(), posts.getTotalPages());
     }
 }

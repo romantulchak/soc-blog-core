@@ -143,6 +143,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
+    @ManyToMany
+    @JoinTable(name = "user_interests",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> interests = new HashSet<>();
+
+
     public User() {
     }
 
@@ -382,5 +390,13 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, username);
+    }
+
+    public Set<Tag> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(Set<Tag> interests) {
+        this.interests = interests;
     }
 }
