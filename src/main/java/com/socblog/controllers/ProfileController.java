@@ -79,7 +79,7 @@ public class ProfileController {
 
     @GetMapping("/explore/{userId}")
     @JsonView(Views.UserFull.class)
-    public List<UserDTO> explorePeople(@PathVariable("userId") User user){
+    public Set<UserDTO> explorePeople(@PathVariable("userId") User user){
       return  profileService.explorePeople(user);
 
     }

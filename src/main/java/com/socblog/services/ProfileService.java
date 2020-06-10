@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface ProfileService {
     UserDTO getDataForUser(Long userId);
@@ -25,6 +26,6 @@ public interface ProfileService {
     NotificationBoxDTO getNotificationsForUser(User user);
     NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification);
     void setOnline(Long userId, boolean isOnline);
-    List<UserDTO> explorePeople(User user);
+    Set<UserDTO> explorePeople(User user);
     ResponseEntity<?> addInterests(Tag tag, User user);
 }

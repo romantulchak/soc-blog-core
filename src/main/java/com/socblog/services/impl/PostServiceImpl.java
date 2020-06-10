@@ -151,8 +151,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostPageableDTO explorePosts(User currentUser, int page) {
-        Pageable pageable = PageRequest.of(page, 1);
-        Page<Post> posts = postRepo.findPostsDto(currentUser.getInterests(), currentUser, pageable);
-        return new PostPageableDTO(posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList()), pageable.getPageNumber(), posts.getTotalPages());
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Post> posts = null;
+
+            posts = postRepo.findPostsDto(currentUser.getInterests(), currentUser, pageable);
+            if(posts.getTotalElements() == 0){
+                posts = postRepo.findAll(pageable);
+            }
+            return new PostPageableDTO(posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList()), pageable.getPageNumber(), posts.getTotalPages());
     }
 }

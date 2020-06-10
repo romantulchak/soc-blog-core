@@ -172,9 +172,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<UserDTO> explorePeople(User user) {
+    public Set<UserDTO> explorePeople(User user) {
         List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
-        return users.stream().map(x->convertToDto(x, user)).limit(10).collect(Collectors.toList());
+        Random r = new Random();
+        return users.stream().map(x->convertToDto(x, user)).skip(r.nextInt(users.size() - 1)).limit(25).collect(Collectors.toSet());
     }
 
     @Override
