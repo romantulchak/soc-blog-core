@@ -18,7 +18,7 @@ import java.util.Set;
 public interface ProfileService {
     UserDTO getDataForUser(Long userId);
     ResponseEntity<?> setUserAvatar(String avatar, User user, MultipartFile file) throws IOException;
-    ResponseEntity<?> updateUserData(User user);
+    ResponseEntity<?> updateUserData(User user, String username);
     ResponseEntity<?> startFollowing(User user, User currentUser);
     ResponseEntity<?> stopFollowing(User user, User currentUser);
     List<UserDTO> getSubscriptions(User user, User currentUser);
@@ -28,4 +28,5 @@ public interface ProfileService {
     void setOnline(Long userId, boolean isOnline);
     Set<UserDTO> explorePeople(User user);
     ResponseEntity<?> addInterests(Tag tag, User user);
+    ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword);
 }

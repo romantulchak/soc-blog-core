@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,17 +45,18 @@ public class ProfileServiceImpl implements ProfileService {
     private String fullUploadPath;
 
     private final SimpMessagingTemplate simpMessagingTemplate;
-
+    private PasswordEncoder encoder;
     @Autowired
     public ProfileServiceImpl(UserRepo userRepo,
                               SimpMessagingTemplate simpMessagingTemplate,
                               NotificationBoxRepo notificationBoxRepo,
-                              NotificationRepo notificationRepo
-                              ){
+                              NotificationRepo notificationRepo,
+                              PasswordEncoder encoder){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.notificationBoxRepo = notificationBoxRepo;
         this.notificationRepo = notificationRepo;
+        this.encoder = encoder;
 
 
     }
@@ -90,12 +93,19 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<?> updateUserData(User user) {
-        User userFromDb = userRepo.findByUsername(user.getUsername()).orElse(null);
-        user.setNew(false);
-        user.setRoles(userFromDb.getRoles());
-        user.setPassword(userFromDb.getPassword());
-        userRepo.save(user);
+    public ResponseEntity<?> updateUserData(User user, String username) {
+        if(user != null) {
+            User userFromDb = userRepo.findByUsername(user.getUsername()).orElse(null);
+            if(!user.getUsername().equals(username)){
+                if(!userRepo.existsByUsername(username)){
+                    user.setUsername(username);
+                }
+            }
+            user.setNew(false);
+            user.setRoles(userFromDb.getRoles());
+            user.setPassword(userFromDb.getPassword());
+            userRepo.save(user);
+        }
         return new ResponseEntity<>("User data was updated", HttpStatus.OK);
     }
 
@@ -174,6 +184,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Set<UserDTO> explorePeople(User user) {
         List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
+        if(users.size() == 0)
+            users = userRepo.findAll();
         Random r = new Random();
         return users.stream().map(x->convertToDto(x, user)).skip(r.nextInt(users.size() - 1)).limit(25).collect(Collectors.toSet());
     }
@@ -189,6 +201,22 @@ public class ProfileServiceImpl implements ProfileService {
             userRepo.save(user);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
 
+        }
+        return new ResponseEntity<>("Something wrong", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword) {
+        if(user != null){
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+            if(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())){
+                user.setPassword(encoder.encode(newPassword));
+                userRepo.save(user);
+                return new ResponseEntity<>("Ok", HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("Old password isn't correct", HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>("Something wrong", HttpStatus.OK);
     }

@@ -76,8 +76,6 @@ public class AuthServiceImpl implements AuthService {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-
-        // Create new user's account
         User user = new User(signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword()));

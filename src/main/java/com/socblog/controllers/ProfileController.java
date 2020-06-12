@@ -1,28 +1,21 @@
 package com.socblog.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
-import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
 import com.socblog.models.*;
 import com.socblog.services.impl.ProfileServiceImpl;
-import com.socblog.utils.UserOnlineUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -52,8 +45,8 @@ public class ProfileController {
 
     @PutMapping("/updateUserData")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateUserData(@RequestBody User user){
-        return profileService.updateUserData(user);
+    public ResponseEntity<?> updateUserData(@RequestBody User user, @RequestParam(value = "username") String username){
+        return profileService.updateUserData(user, username);
     }
 
 
@@ -116,5 +109,10 @@ public class ProfileController {
     public ResponseEntity<?> addInterests(@RequestBody Tag tag, @PathVariable("userId") User user){
         return profileService.addInterests(tag, user);
     }
+    @PutMapping(value = "/changePassword/{userId}")
+    public ResponseEntity<?> changePassword(@PathVariable("userId") User user, @RequestParam(value = "old")String oldPassword, @RequestParam(value = "new") String newPassword){
+        return profileService.changePassword(user, oldPassword, newPassword);
+    }
+
 
 }
