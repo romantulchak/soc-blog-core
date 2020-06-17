@@ -109,9 +109,13 @@ public class ProfileController {
     public ResponseEntity<?> addInterests(@RequestBody Tag tag, @PathVariable("userId") User user){
         return profileService.addInterests(tag, user);
     }
-    @PutMapping(value = "/changePassword/{userId}")
+    @PutMapping("/changePassword/{userId}")
     public ResponseEntity<?> changePassword(@PathVariable("userId") User user, @RequestParam(value = "old")String oldPassword, @RequestParam(value = "new") String newPassword){
         return profileService.changePassword(user, oldPassword, newPassword);
+    }
+    @DeleteMapping("/deleteImage")
+    public ResponseEntity<?> deleteUserImage(@RequestParam(value = "userId") User user, @RequestParam(value = "imageId") Long imageId){
+        return profileService.deleteUserImage(user, imageId);
     }
 
 

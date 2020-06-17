@@ -29,4 +29,5 @@ public interface ProfileService {
     Set<UserDTO> explorePeople(User user);
     ResponseEntity<?> addInterests(Tag tag, User user);
     ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword);
+    ResponseEntity<?> deleteUserImage(User user, Long imageId);
 }

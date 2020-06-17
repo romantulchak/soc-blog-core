@@ -26,4 +26,9 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u FROM User  u where u.id <> :id and (u.country = :country or u.city = :city) and (:user not member of u.subscribers) ")
     List<User> explorePeople(@Param("id") Long user, @Param("country") String country, @Param("city") String city, @Param("user") User sub);
+
+
+    @Query(value = "SELECT u FROM User u where u.id <> :id and (:user not member of u.subscribers)")
+    List<User> findAllForUser(@Param("id") Long userId, @Param("user") User user);
+
 }

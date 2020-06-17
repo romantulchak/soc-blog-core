@@ -6,6 +6,7 @@ import com.socblog.dto.UserDTO;
 import com.socblog.models.*;
 import com.socblog.models.enums.ENotification;
 import com.socblog.models.enums.ERole;
+import com.socblog.repo.ImageRepo;
 import com.socblog.repo.NotificationBoxRepo;
 import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
@@ -46,17 +47,20 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private PasswordEncoder encoder;
+    private ImageRepo imageRepo;
     @Autowired
     public ProfileServiceImpl(UserRepo userRepo,
                               SimpMessagingTemplate simpMessagingTemplate,
                               NotificationBoxRepo notificationBoxRepo,
                               NotificationRepo notificationRepo,
+                              ImageRepo imageRepo,
                               PasswordEncoder encoder){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.notificationBoxRepo = notificationBoxRepo;
         this.notificationRepo = notificationRepo;
         this.encoder = encoder;
+        this.imageRepo = imageRepo;
 
 
     }
@@ -75,7 +79,8 @@ public class ProfileServiceImpl implements ProfileService {
         String avatarPath = bast64ToFile(avatar, user);
         user.setAvatar("http://localhost:8080/avatars_min/" + avatarPath);
         if(multipartFile.getSize() < 5242880) {
-            user.getImages().add(new Image(FileSaver.saveFile(multipartFile, fullUploadPath, "avatars_full")));
+            Image image = new Image(FileSaver.saveFile(multipartFile, fullUploadPath, "avatars_full"), user);
+            imageRepo.save(image);
         }else{
             System.out.println("Need to compress");
         }
@@ -185,7 +190,7 @@ public class ProfileServiceImpl implements ProfileService {
     public Set<UserDTO> explorePeople(User user) {
         List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
         if(users.size() == 0)
-            users = userRepo.findAll();
+            users = userRepo.findAllForUser(user.getId(), user);
         Random r = new Random();
         return users.stream().map(x->convertToDto(x, user)).skip(r.nextInt(users.size() - 1)).limit(25).collect(Collectors.toSet());
     }
@@ -217,6 +222,16 @@ public class ProfileServiceImpl implements ProfileService {
             }else{
                 return new ResponseEntity<>("Old password isn't correct", HttpStatus.OK);
             }
+        }
+        return new ResponseEntity<>("Something wrong", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteUserImage(User user, Long imageId) {
+        if(user != null){
+           Image image = user.getImages().stream().filter(x-> x.getId().equals(imageId)).findFirst().orElse(null);
+            user.getImages().remove(image);
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
         }
         return new ResponseEntity<>("Something wrong", HttpStatus.OK);
     }

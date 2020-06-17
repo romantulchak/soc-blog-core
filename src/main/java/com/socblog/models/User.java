@@ -82,7 +82,7 @@ public class User {
     @JsonView(Views.UserFull.class)
     private List<Post> posts;
 
-    @ElementCollection
+    @OneToMany
     @JsonView(Views.UserFull.class)
     private List<Image> images;
 
