@@ -1,10 +1,9 @@
 package com.socblog.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.socblog.models.Comment;
-import com.socblog.models.Post;
-import com.socblog.models.User;
-import com.socblog.models.Views;
+import com.socblog.models.*;
+
+import java.util.List;
 
 public class CommentDTO {
 
@@ -20,6 +19,9 @@ public class CommentDTO {
     @JsonView(Views.CommentFull.class)
     private User user;
 
+    @JsonView(Views.CommentFull.class)
+    private List<Replay> replays;
+
 
 
     public CommentDTO(){
@@ -31,6 +33,7 @@ public class CommentDTO {
         this.post = comment.getPost();
         this.text = comment.getText();
         this.user = comment.getUser();
+        this.replays = comment.getReplays();
     }
 
     public Long getId() {
@@ -65,4 +68,11 @@ public class CommentDTO {
         this.user = user;
     }
 
+    public List<Replay> getReplays() {
+        return replays;
+    }
+
+    public void setReplays(List<Replay> replays) {
+        this.replays = replays;
+    }
 }

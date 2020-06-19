@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Comment {
@@ -23,6 +26,24 @@ public class Comment {
     @ManyToOne
     @JsonView(Views.CommentFull.class)
     private User user;
+
+    @OneToMany(mappedBy = "comment")
+    @JsonView(Views.CommentFull.class)
+    private List<Replay> replays;
+
+    @JsonView(Views.CommentFull.class)
+    private LocalDateTime createdDate;
+
+    public Comment() {
+    }
+    public Comment(Comment comment, User user, Post post){
+        this.id = comment.getId();
+        this.text = comment.getText();
+        this.user = user;
+        this.post = post;
+        this.replays = new ArrayList<>();
+        this.createdDate = LocalDateTime.now();
+    }
 
 
     public Long getId() {
@@ -55,5 +76,21 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Replay> getReplays() {
+        return replays;
+    }
+
+    public void setReplays(List<Replay> replays) {
+        this.replays = replays;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }

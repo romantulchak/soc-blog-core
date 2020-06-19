@@ -2,6 +2,8 @@ package com.socblog.repo;
 
 import com.socblog.dto.UserDTO;
 import com.socblog.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,6 +31,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
 
     @Query(value = "SELECT u FROM User u where u.id <> :id and (:user not member of u.subscribers)")
-    List<User> findAllForUser(@Param("id") Long userId, @Param("user") User user);
+    Page<User> findAllForUser(@Param("id") Long userId, @Param("user") User user, Pageable pageable);
 
 }

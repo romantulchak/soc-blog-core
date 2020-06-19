@@ -43,6 +43,9 @@ public class PostDTO {
     @JsonView(Views.PostFull.class)
     private int likesCounter;
 
+    @JsonView(Views.PostFull.class)
+    private int commentsCounter;
+
     public PostDTO() {
     }
 
@@ -58,6 +61,7 @@ public class PostDTO {
         this.likes = post.getLikes();
         this.likesCounter = post.getLikes().size();
         this.meLiked = this.likes.contains(currentUser);
+        this.commentsCounter = post.getComments().size();
     }
 
     public String getName() {
@@ -147,5 +151,13 @@ public class PostDTO {
 
     public void setLikesCounter(int likesCounter) {
         this.likesCounter = likesCounter;
+    }
+
+    public int getCommentsCounter() {
+        return commentsCounter;
+    }
+
+    public void setCommentsCounter(int commentsCounter) {
+        this.commentsCounter = commentsCounter;
     }
 }

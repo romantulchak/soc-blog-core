@@ -21,7 +21,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class})
     private long id;
 
     @NotBlank
@@ -55,11 +55,11 @@ public class User {
     private String city;
 
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class})
     @NotBlank
     private String firstName;
 
-    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class, Views.PostFull.class, Views.CommentFull.class})
     @NotBlank
     private String lastName;
 
@@ -149,6 +149,10 @@ public class User {
                 inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> interests = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "user")
+    private List<Replay> replays;
 
 
     public User() {
@@ -398,5 +402,13 @@ public class User {
 
     public void setInterests(Set<Tag> interests) {
         this.interests = interests;
+    }
+
+    public List<Replay> getReplays() {
+        return replays;
+    }
+
+    public void setReplays(List<Replay> replays) {
+        this.replays = replays;
     }
 }

@@ -15,7 +15,9 @@ import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -189,10 +191,12 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Set<UserDTO> explorePeople(User user) {
         List<User> users = userRepo.explorePeople( user.getId(), user.getCountry(), user.getCity(), user);
-        if(users.size() == 0)
-            users = userRepo.findAllForUser(user.getId(), user);
-        Random r = new Random();
-        return users.stream().map(x->convertToDto(x, user)).skip(r.nextInt(users.size() - 1)).limit(25).collect(Collectors.toSet());
+        if(users.size() <25) {
+            Pageable pageable = PageRequest.of(0, 25 - users.size());
+            Page<User> pageUsers = userRepo.findAllForUser(user.getId(), user, pageable);
+            users.addAll(pageUsers.toList());
+        }
+        return users.stream().map(x->convertToDto(x, user)).limit(25).collect(Collectors.toSet());
     }
 
     @Override
