@@ -19,8 +19,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-
-    @JsonView({Views.UserFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class})
     private Long id;
 
     @JsonView({Views.UserFull.class,Views.PostFull.class})
@@ -53,8 +52,8 @@ public class Post {
     private String smallDescription;
 
 
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
 
     @ManyToMany(fetch = FetchType.EAGER)

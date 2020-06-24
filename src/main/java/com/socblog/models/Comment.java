@@ -21,6 +21,7 @@ public class Comment {
     private String text;
 
     @ManyToOne
+    @JsonView(Views.CommentFull.class)
     private Post post;
 
     @ManyToOne
@@ -36,7 +37,7 @@ public class Comment {
 
     public Comment() {
     }
-    public Comment(Comment comment, User user, Post post){
+    public Comment(Comment comment, User user,Post post){
         this.id = comment.getId();
         this.text = comment.getText();
         this.user = user;

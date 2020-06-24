@@ -61,6 +61,7 @@ public class PostDTO {
         this.likes = post.getLikes();
         this.likesCounter = post.getLikes().size();
         this.meLiked = this.likes.contains(currentUser);
+
         this.commentsCounter = post.getComments().size();
     }
 

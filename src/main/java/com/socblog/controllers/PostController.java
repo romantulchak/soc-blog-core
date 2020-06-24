@@ -49,7 +49,7 @@ public class PostController {
     }
 
     @DeleteMapping("/deletePost/{postId}/{userId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') and @userSecurity.hasUserId(authentication, #post.user.id)")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Post post, @PathVariable("userId") User user){
         return postService.deletePost(post, user);
 

@@ -26,7 +26,7 @@ public class User {
 
     @NotBlank
     @Size(max = 25, min = 3)
-    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class, Views.NotificationFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class, Views.NotificationFull.class, Views.CommentFull.class})
     private String username;
 
     @NotBlank

@@ -92,19 +92,20 @@ public class PostServiceImpl implements PostService {
     }
     @Override
     public ResponseEntity<?> deletePost(Post post, User user) {
-        if(post.getUser().equals(user)){
+
+        if(post != null) {
             postRepo.delete(post);
-            simpMessagingTemplate.convertAndSend( "/topic/updatePost/delete", user.getId());
+            simpMessagingTemplate.convertAndSend("/topic/updatePost/delete", user.getId());
             return new ResponseEntity<>("Ok", HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>("Something wrong", HttpStatus.OK);
         }
+        return new ResponseEntity<>("Something wrong", HttpStatus.OK);
+
     }
 
 
     @Override
     public PostPageableDTO getPostsByTag(String tagName, int page, User currentUser) {
-        Pageable pageable = PageRequest.of(page, 2);
+        Pageable pageable = PageRequest.of(page, 5);
         Page<Post> posts = postRepo.findPostsByTagName(tagName, pageable);
         List<PostDTO> postDTOS = posts.stream().map(x->postDTOS(currentUser, x)).collect(Collectors.toList());
         return new PostPageableDTO(postDTOS, pageable.getPageNumber(), posts.getTotalPages());
