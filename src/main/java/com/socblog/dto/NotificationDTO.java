@@ -2,6 +2,7 @@ package com.socblog.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.models.Notification;
+import com.socblog.models.Post;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 import com.socblog.models.enums.ENotification;
@@ -33,7 +34,8 @@ public class NotificationDTO {
     @JsonView(Views.NotificationFull.class)
     private LocalDateTime dateTime;
 
-
+    @JsonView(Views.NotificationFull.class)
+    private Post post;
 
     public  NotificationDTO(){
 
@@ -46,6 +48,7 @@ public class NotificationDTO {
         this.isRead = notification.getRead();
         this.eNotification = notification.geteNotification();
         this.dateTime = notification.getDateTime();
+        this.post = notification.getPost();
     }
 
     public Long getId() {
@@ -97,11 +100,11 @@ public class NotificationDTO {
         this.dateTime = dateTime;
     }
 
-    @Override
-    public String toString() {
-        return "NotificationDTO{" +
-                "id=" + id +
-                ", user=" + user +
-                '}';
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

@@ -4,10 +4,7 @@ import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
-import com.socblog.models.Notification;
-import com.socblog.models.NotificationBox;
-import com.socblog.models.Tag;
-import com.socblog.models.User;
+import com.socblog.models.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,5 +26,6 @@ public interface ProfileService {
     Set<UserDTO> explorePeople(User user);
     ResponseEntity<?> addInterests(Tag tag, User user);
     ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword);
-    ResponseEntity<?> deleteUserImage(User user, Long imageId);
+    ResponseEntity<?> deleteUserImage(User user, Image image);
+    void removeAccount(User user);
 }

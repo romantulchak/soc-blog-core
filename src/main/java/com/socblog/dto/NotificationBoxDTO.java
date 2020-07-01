@@ -6,6 +6,7 @@ import com.socblog.models.NotificationBox;
 import com.socblog.models.User;
 import com.socblog.models.Views;
 
+import javax.xml.bind.Element;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class NotificationBoxDTO {
     public NotificationBoxDTO(NotificationBoxDTO notificationBoxDTO, List<NotificationDTO> notificationDTO){
         this.id = notificationBoxDTO.getId();
         this.notificationDTOS = notificationDTO.stream().limit(100).collect(Collectors.toList());
-        Collections.reverse(this.notificationDTOS);
+
         this.notificationCounter = notificationDTOS.stream().filter(x->!x.getRead()).count();
     }
 

@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.socblog.dto.PostByDateDTO;
 import com.socblog.dto.PostDTO;
 import com.socblog.dto.PostPageableDTO;
+import com.socblog.models.Notification;
 import com.socblog.models.Post;
 import com.socblog.models.User;
+import com.socblog.models.enums.ENotification;
+import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.PostRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.services.PostService;
@@ -24,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,14 +39,17 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepo postRepo;
     private final UserRepo userRepo;
+    private final NotificationRepo notificationRepo;
     private final SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     public PostServiceImpl(PostRepo postRepo,
                            UserRepo userRepo,
+                           NotificationRepo notificationRepo,
                            SimpMessagingTemplate simpMessagingTemplate
                            ){
         this.postRepo = postRepo;
         this.userRepo = userRepo;
+        this.notificationRepo = notificationRepo;
         this.simpMessagingTemplate =simpMessagingTemplate;
     }
 
@@ -136,11 +141,15 @@ public class PostServiceImpl implements PostService {
         User currentUser = userRepo.findById(currentUserId).orElse(null);
         Post post = postRepo.findById(postId).orElse(null);
         if(post != null && currentUser != null){
+            User postUser = post.getUser();
             if(isContains(currentUser, post.getLikes())){
                 post.getLikes().remove(currentUser);
             }else{
+               Notification notification = new Notification("liked your post.", postUser.getNotificationBox(), currentUser, ENotification.SET_LIKE, post);
                userRepo.save(new UserLevelUp().levelUpByLike(currentUser));
-                post.getLikes().add(currentUser);
+               notificationRepo.save(notification);
+               post.getLikes().add(currentUser);
+               simpMessagingTemplate.convertAndSend("/topic/notification", post.getUser().getId());
 
             }
 

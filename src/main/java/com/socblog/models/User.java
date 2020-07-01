@@ -78,11 +78,11 @@ public class User {
     @JsonView({Views.UserFull.class,Views.UserSubscribeFull.class})
     private String gender;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonView(Views.UserFull.class)
     private List<Post> posts;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonView(Views.UserFull.class)
     private List<Image> images;
 
@@ -103,7 +103,7 @@ public class User {
 
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Tag> tags;
 
 
@@ -129,18 +129,18 @@ public class User {
     private Set<User> subscriptions = new HashSet<>();
 
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private NotificationBox notificationBox;
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Notification> notifications;
 
 
     @JsonView(Views.UserFull.class)
     private LocalDate createdUser;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToMany
@@ -151,7 +151,7 @@ public class User {
     private Set<Tag> interests = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Replay> replays;
 
 

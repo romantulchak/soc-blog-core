@@ -120,7 +120,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<?> startFollowing(User user, User currentUser) {
         if(user != null && currentUser != null) {
             currentUser.getSubscriptions().add(user);
-            Notification notification = new Notification("started following you.", user.getNotificationBox(), currentUser, ENotification.START_FOLLOWING);
+             Notification notification = new Notification("started following you.", user.getNotificationBox(), currentUser, ENotification.START_FOLLOWING);
             userRepo.save(currentUser);
             notificationRepo.save(notification);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
@@ -231,12 +231,18 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<?> deleteUserImage(User user, Long imageId) {
-        if(user != null){
-           Image image = user.getImages().stream().filter(x-> x.getId().equals(imageId)).findFirst().orElse(null);
+    public ResponseEntity<?> deleteUserImage(User user, Image image) {
+        if(user != null && image != null){
             user.getImages().remove(image);
             return new ResponseEntity<>("Ok", HttpStatus.OK);
         }
         return new ResponseEntity<>("Something wrong", HttpStatus.OK);
+    }
+
+    @Override
+    public void removeAccount(User user) {
+        if(user != null){
+            userRepo.delete(user);
+        }
     }
 }

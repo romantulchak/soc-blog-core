@@ -16,7 +16,7 @@ public class NotificationBox {
     @OneToOne
     private User user;
 
-    @OneToMany(mappedBy = "notificationBox")
+    @OneToMany(mappedBy = "notificationBox", cascade = CascadeType.ALL)
     @JsonView(Views.UserFull.class)
     private List<Notification> notifications = new ArrayList<>();
 

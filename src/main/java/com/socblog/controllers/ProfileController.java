@@ -76,8 +76,6 @@ public class ProfileController {
       return  profileService.explorePeople(user);
 
     }
-
-
     @PutMapping("/stopFollowing/{userId}/{currentUserById}")
     public ResponseEntity<?> stopFollowing(@PathVariable("userId") User user, @PathVariable("currentUserById") User currentUser){
         return profileService.stopFollowing(user, currentUser);
@@ -114,9 +112,15 @@ public class ProfileController {
         return profileService.changePassword(user, oldPassword, newPassword);
     }
     @DeleteMapping("/deleteImage")
-    public ResponseEntity<?> deleteUserImage(@RequestParam(value = "userId") User user, @RequestParam(value = "imageId") Long imageId){
-        return profileService.deleteUserImage(user, imageId);
+    @PreAuthorize("hasRole('USER') and @userSecurity.hasUserId(authentication, #image.user.id)")
+    public ResponseEntity<?> deleteUserImage(@RequestParam(value = "userId") User user, @RequestParam(value = "imageId") Image image){
+        return profileService.deleteUserImage(user, image);
     }
 
+    @DeleteMapping("/removeAccount/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public void removeAccount(@PathVariable("userId") User user){
+        profileService.removeAccount(user);
+    }
 
 }

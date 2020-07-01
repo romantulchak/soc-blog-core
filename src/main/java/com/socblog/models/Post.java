@@ -19,7 +19,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.CommentFull.class,Views.NotificationFull.class})
     private Long id;
 
     @JsonView({Views.UserFull.class,Views.PostFull.class})
@@ -36,7 +36,7 @@ public class Post {
     @JsonView({Views.UserFull.class, Views.PostFull.class})
     private List<Tag> tags = new ArrayList<>();
 
-    @JsonView({Views.UserFull.class, Views.PostFull.class})
+    @JsonView({Views.UserFull.class, Views.PostFull.class, Views.NotificationFull.class})
     private String imagePath;
 
 
@@ -56,13 +56,17 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "post_likes",
                 joinColumns = @JoinColumn(name = "post_id"),
                 inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @JsonView(Views.PostFull.class)
     private Set<User> likes = new HashSet<>();
+
+
+    @OneToMany
+    private List<Notification> notifications;
 
     public Post(){
 
@@ -160,4 +164,11 @@ public class Post {
         this.likes = likes;
     }
 
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }

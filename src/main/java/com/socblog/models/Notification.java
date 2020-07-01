@@ -31,21 +31,32 @@ public class Notification {
     @JsonView(Views.NotificationFull.class)
     @Enumerated(EnumType.STRING)
     private ENotification eNotification;
-
     @JsonView(Views.NotificationFull.class)
     private LocalDateTime dateTime;
+
+    @ManyToOne
+    @JsonView(Views.NotificationFull.class)
+    private Post post;
 
     public Notification() {
     }
 
     public Notification(String message, NotificationBox notificationBox, User user, ENotification eNotification) {
-
         this.message = message;
         this.isRead = false;
         this.notificationBox = notificationBox;
         this.user = user;
         this.eNotification = eNotification;
         this.dateTime = LocalDateTime.now();
+    }
+    public Notification(String message, NotificationBox notificationBox, User user, ENotification eNotification, Post post) {
+        this.message = message;
+        this.isRead = false;
+        this.notificationBox = notificationBox;
+        this.user = user;
+        this.eNotification = eNotification;
+        this.dateTime = LocalDateTime.now();
+        this.post = post;
     }
 
     public Long getId() {
@@ -102,5 +113,14 @@ public class Notification {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }
