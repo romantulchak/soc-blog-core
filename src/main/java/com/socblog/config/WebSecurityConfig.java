@@ -63,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/posts/**").permitAll()
                 .antMatchers("/api/tags/**").permitAll()
                 .antMatchers("/api/images/**").permitAll()
+                .antMatchers("/api/search/**").permitAll()
                 .antMatchers("/images/**").permitAll()
                 .antMatchers("/avatars_min/**").permitAll()
                 .antMatchers("/avatars_full/**").permitAll()

@@ -18,12 +18,13 @@ public class TagDTO {
     private String name;
 
 
-    @ManyToOne
     @JsonView({Views.PostFull.class, Views.TagFull.class})
     private User user;
 
-    @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
+
+    @JsonView({Views.PostFull.class, Views.TagFull.class})
+    private Integer postsCounter;
 
     public TagDTO() {
 
@@ -34,6 +35,7 @@ public class TagDTO {
         this.name = tag.getName();
         this.user = tag.getUser();
         this.posts = tag.getPosts();
+        this.postsCounter = tag.getPosts().size();
     }
 
     public Long getId() {
@@ -66,5 +68,13 @@ public class TagDTO {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public Integer getPostsCounter() {
+        return postsCounter;
+    }
+
+    public void setPostsCounter(Integer postsCounter) {
+        this.postsCounter = postsCounter;
     }
 }

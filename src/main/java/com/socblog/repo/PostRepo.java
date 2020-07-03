@@ -38,4 +38,5 @@ public interface PostRepo extends JpaRepository<Post, Long> {
     @Query(value = "SELECT p FROM Post p left join p.tags t where p.user <> :user and t in :userInterests")
     Page<Post> findPostsDto(@Param("userInterests")Set<Tag> tags, @Param("user") User user, Pageable pageable);
 
+    List<Post> findAllByNameContaining(String name);
 }

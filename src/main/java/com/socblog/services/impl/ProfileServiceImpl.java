@@ -10,6 +10,7 @@ import com.socblog.repo.ImageRepo;
 import com.socblog.repo.NotificationBoxRepo;
 import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.UserRepo;
+import com.socblog.services.ConvertToDTO;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
 import com.socblog.utils.FileSaver;
@@ -35,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ProfileServiceImpl implements ProfileService {
+public class ProfileServiceImpl implements ProfileService, ConvertToDTO {
 
     private final NotificationBoxRepo notificationBoxRepo;
     private final NotificationRepo notificationRepo;
@@ -63,8 +64,6 @@ public class ProfileServiceImpl implements ProfileService {
         this.notificationRepo = notificationRepo;
         this.encoder = encoder;
         this.imageRepo = imageRepo;
-
-
     }
 
     @Override
@@ -151,10 +150,7 @@ public class ProfileServiceImpl implements ProfileService {
         return userRepo.findAllBySubscribers(user).stream().map(x->convertToDto(x, currentUser)).collect(Collectors.toList());
     }
 
-    private UserDTO convertToDto(User user, User currentUser){
-        return new UserDTO(user,currentUser);
 
-    }
 
 
     @Override
@@ -200,7 +196,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<?> addInterests(Tag tag, User user) {
+    public ResponseEntity<?> addInterests(Tag tag, String username) {
+        User user = userRepo.findByUsername(username).orElse(null);
         if(user != null && tag != null){
            if(user.getInterests().contains(tag)){
                user.getInterests().remove(tag) ;
@@ -215,10 +212,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword) {
+    public ResponseEntity<?> changePassword(String username, String oldPassword, String newPassword) {
+        User user = userRepo.findByUsername(username).orElse(null);
         if(user != null){
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
             if(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())){
                 user.setPassword(encoder.encode(newPassword));
                 userRepo.save(user);

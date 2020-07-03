@@ -11,7 +11,9 @@ import com.socblog.models.enums.ENotification;
 import com.socblog.repo.NotificationRepo;
 import com.socblog.repo.PostRepo;
 import com.socblog.repo.UserRepo;
+import com.socblog.services.ConvertToDTO;
 import com.socblog.services.PostService;
+import com.socblog.services.SearchService;
 import com.socblog.utils.FileSaver;
 import com.socblog.utils.UserLevelUp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class PostServiceImpl implements PostService {
+public class PostServiceImpl implements PostService, ConvertToDTO {
 
     @Value("${upload.path.post}")
     private String path;
@@ -60,10 +62,6 @@ public class PostServiceImpl implements PostService {
         Page<Post> posts = postRepo.findAllBySubscriptions(user.getSubscriptions(), pageable);
         List<PostDTO> postDTOS = posts.stream().map(x->postDTOS(user, x)).collect(Collectors.toList());
         return new PostPageableDTO(postDTOS, pageable.getPageNumber(), posts.getTotalPages());
-    }
-
-    private PostDTO postDTOS(User currentUser, Post post){
-        return new PostDTO(post, currentUser);
     }
 
     @Override

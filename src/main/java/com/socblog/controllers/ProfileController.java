@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.socblog.dto.NotificationBoxDTO;
 import com.socblog.dto.UserDTO;
 import com.socblog.models.*;
+import com.socblog.payload.request.ChangePasswordRequest;
 import com.socblog.services.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -103,13 +105,13 @@ public class ProfileController {
         return profileService.readNotification(notificationBox, notification);
     }
 
-    @PutMapping("/addInterests/{userId}")
-    public ResponseEntity<?> addInterests(@RequestBody Tag tag, @PathVariable("userId") User user){
-        return profileService.addInterests(tag, user);
+    @PutMapping("/addInterests")
+    public ResponseEntity<?> addInterests(@RequestBody Tag tag, Principal principal){
+        return profileService.addInterests(tag, principal.getName());
     }
-    @PutMapping("/changePassword/{userId}")
-    public ResponseEntity<?> changePassword(@PathVariable("userId") User user, @RequestParam(value = "old")String oldPassword, @RequestParam(value = "new") String newPassword){
-        return profileService.changePassword(user, oldPassword, newPassword);
+    @PutMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, Principal principal){
+        return profileService.changePassword(principal.getName(), changePasswordRequest.getOldPassword(),changePasswordRequest.getNewPassword());
     }
     @DeleteMapping("/deleteImage")
     @PreAuthorize("hasRole('USER') and @userSecurity.hasUserId(authentication, #image.user.id)")

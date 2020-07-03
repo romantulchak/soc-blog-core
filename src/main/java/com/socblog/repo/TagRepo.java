@@ -15,4 +15,6 @@ public interface TagRepo extends JpaRepository<Tag, Long> {
     List<TagDTO> tags();
 
     Boolean existsByName(String name);
+
+    List<Tag> findAllByNameContaining(String str);
 }

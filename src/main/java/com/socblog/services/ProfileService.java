@@ -1,8 +1,6 @@
 package com.socblog.services;
 
-import com.socblog.dto.AvatarsDTO;
 import com.socblog.dto.NotificationBoxDTO;
-import com.socblog.dto.NotificationDTO;
 import com.socblog.dto.UserDTO;
 import com.socblog.models.*;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +22,8 @@ public interface ProfileService {
     NotificationBoxDTO readNotification(NotificationBox notificationBox, Notification notification);
     void setOnline(Long userId, boolean isOnline);
     Set<UserDTO> explorePeople(User user);
-    ResponseEntity<?> addInterests(Tag tag, User user);
-    ResponseEntity<?> changePassword(User user, String oldPassword, String newPassword);
+    ResponseEntity<?> addInterests(Tag tag, String username);
+    ResponseEntity<?> changePassword(String user, String oldPassword, String newPassword);
     ResponseEntity<?> deleteUserImage(User user, Image image);
     void removeAccount(User user);
 }
