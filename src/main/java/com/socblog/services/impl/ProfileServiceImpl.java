@@ -13,6 +13,7 @@ import com.socblog.repo.UserRepo;
 import com.socblog.services.ConvertToDTO;
 import com.socblog.services.ProfileService;
 import com.socblog.sockets.PostMessage;
+import com.socblog.utils.EmailSenderUtils;
 import com.socblog.utils.FileSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,12 +53,14 @@ public class ProfileServiceImpl implements ProfileService, ConvertToDTO {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private PasswordEncoder encoder;
     private ImageRepo imageRepo;
+    private EmailSenderUtils emailSenderUtils;
     @Autowired
     public ProfileServiceImpl(UserRepo userRepo,
                               SimpMessagingTemplate simpMessagingTemplate,
                               NotificationBoxRepo notificationBoxRepo,
                               NotificationRepo notificationRepo,
                               ImageRepo imageRepo,
+                              EmailSenderUtils emailSenderUtils,
                               PasswordEncoder encoder){
         this.userRepo = userRepo;
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -64,6 +68,7 @@ public class ProfileServiceImpl implements ProfileService, ConvertToDTO {
         this.notificationRepo = notificationRepo;
         this.encoder = encoder;
         this.imageRepo = imageRepo;
+        this.emailSenderUtils = emailSenderUtils;
     }
 
     @Override
@@ -102,14 +107,10 @@ public class ProfileServiceImpl implements ProfileService, ConvertToDTO {
     public ResponseEntity<?> updateUserData(User user, String username) {
         if(user != null) {
             User userFromDb = userRepo.findByUsername(user.getUsername()).orElse(null);
-            if(!user.getUsername().equals(username)){
-                if(!userRepo.existsByUsername(username)){
-                    user.setUsername(username);
-                }
-            }
             user.setNew(false);
             user.setRoles(userFromDb.getRoles());
             user.setPassword(userFromDb.getPassword());
+            user.setBirthDay(user.getBirthDay().plusDays(1));
             userRepo.save(user);
         }
         return new ResponseEntity<>("User data was updated", HttpStatus.OK);
@@ -219,6 +220,7 @@ public class ProfileServiceImpl implements ProfileService, ConvertToDTO {
             if(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())){
                 user.setPassword(encoder.encode(newPassword));
                 userRepo.save(user);
+                emailSenderUtils.sendEmail(user.getEmail(), "Change Password", "Your password has been changed: " + LocalDateTime.now());
                 return new ResponseEntity<>("Ok", HttpStatus.OK);
             }else{
                 return new ResponseEntity<>("Old password isn't correct", HttpStatus.OK);

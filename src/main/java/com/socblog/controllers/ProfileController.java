@@ -56,7 +56,6 @@ public class ProfileController {
     @GetMapping("/userById/{userId}/{currentUserById}")
     @JsonView(Views.UserFull.class)
     public UserDTO userById(@PathVariable("userId") User user, @PathVariable("currentUserById") User userInSystem){
-
         return profileService.userById(user,userInSystem);
     }
 

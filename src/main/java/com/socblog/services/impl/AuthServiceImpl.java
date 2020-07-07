@@ -13,8 +13,10 @@ import com.socblog.repo.RoleRepo;
 import com.socblog.repo.UserRepo;
 import com.socblog.security.jwt.JwtUtils;
 import com.socblog.services.AuthService;
+import com.socblog.utils.EmailSenderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,18 +39,21 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder encoder;
     private JwtUtils jwtUtils;
     private NotificationBoxRepo notificationBoxRepo;
+    private EmailSenderUtils emailSenderUtils;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepo userRepo, RoleRepo roleRepo,
                            PasswordEncoder encoder,
                            JwtUtils jwtUtils,
+                           EmailSenderUtils emailSenderUtils,
                            NotificationBoxRepo notificationBoxRepo){
         this.authenticationManager = authenticationManager;
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.emailSenderUtils =emailSenderUtils;
         this.notificationBoxRepo = notificationBoxRepo;
     }
 
@@ -79,10 +84,8 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword()));
-
         Set<String> strRoles = signupRequest.getRole();
         Set<Role> roles = new HashSet<>();
-
         setRoles(strRoles, roles);
         user.setFirstName(signupRequest.getFirstName());
         user.setLastName(signupRequest.getLastName());
@@ -91,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
         NotificationBox notificationBox = new NotificationBox();
         notificationBox.setUser(user);
         notificationBoxRepo.save(notificationBox);
-
+        emailSenderUtils.sendEmail(user.getEmail(), "Registration", "You successfully created account in our networkLv!");
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 @Component("userSecurity")
 public class UserAccess {
 
-
-
     public boolean hasUserId(Authentication authentication, Long userId){
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         return user != null && user.getId().equals(userId);

@@ -411,4 +411,6 @@ public class User {
     public void setReplays(List<Replay> replays) {
         this.replays = replays;
     }
+
+
 }
