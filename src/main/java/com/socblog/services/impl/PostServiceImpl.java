@@ -89,10 +89,26 @@ public class PostServiceImpl implements PostService, ConvertToDTO {
         simpMessagingTemplate.convertAndSend( "/topic/updatePost", postDTOS(user, post));
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
+
     @Override
-    public ResponseEntity<?> editPost(Post post) {
-        return null;
+    public ResponseEntity<?> editPost(MultipartFile multipartFile, String post) throws IOException {
+        Gson g = new Gson();
+        PostDTO postDTO = g.fromJson(post, PostDTO.class);
+        Post postToSave = postRepo.findById(postDTO.getId()).orElse(null);
+        if (postToSave != null) {
+            if (multipartFile != null) {
+                postToSave.setImagePath(FileSaver.saveFile(multipartFile, path, "posts_images"));
+            }
+
+            postToSave.setName(postDTO.getName());
+            postToSave.setText(postDTO.getText());
+            postToSave.setSmallDescription(postDTO.getSmallDescription());
+            postRepo.save(postToSave);
+            return new ResponseEntity<>("Ok", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Something wrong!", HttpStatus.BAD_GATEWAY);
     }
+
     @Override
     public ResponseEntity<?> deletePost(Post post, User user) {
 
@@ -143,11 +159,13 @@ public class PostServiceImpl implements PostService, ConvertToDTO {
             if(isContains(currentUser, post.getLikes())){
                 post.getLikes().remove(currentUser);
             }else{
-               Notification notification = new Notification("liked your post.", postUser.getNotificationBox(), currentUser, ENotification.SET_LIKE, post);
-               userRepo.save(new UserLevelUp().levelUpByLike(currentUser));
-               notificationRepo.save(notification);
-               post.getLikes().add(currentUser);
-               simpMessagingTemplate.convertAndSend("/topic/notification", post.getUser().getId());
+               if(currentUserId != post.getUser().getId()){
+                   Notification notification = new Notification("liked your post.", postUser.getNotificationBox(), currentUser, ENotification.SET_LIKE, post);
+                   notificationRepo.save(notification);
+               }
+                userRepo.save(new UserLevelUp().levelUpByLike(currentUser));
+                post.getLikes().add(currentUser);
+                simpMessagingTemplate.convertAndSend("/topic/notification", post.getUser().getId());
 
             }
 

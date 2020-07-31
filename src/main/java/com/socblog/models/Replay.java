@@ -25,7 +25,6 @@ public class Replay {
     @ManyToOne
     private Comment comment;
 
-
     @JsonView(Views.CommentFull.class)
     private LocalDateTime createdDate;
 

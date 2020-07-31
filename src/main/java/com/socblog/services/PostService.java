@@ -18,7 +18,7 @@ public interface PostService {
     PostPageableDTO getAllPost(User user, int page);
     PostPageableDTO getAllForUser(User user, int page, User currentUser);
     ResponseEntity<?> createPost(String post, MultipartFile file) throws IOException;
-    ResponseEntity<?> editPost(Post post);
+    ResponseEntity<?> editPost(MultipartFile multipartFile, String post) throws IOException;
     ResponseEntity<?> deletePost(Post post, User user);
     PostPageableDTO getPostsByTag(String tagName, int page, User currentUser);
     List<PostByDateDTO> getPostsForChart(User user);

@@ -96,4 +96,10 @@ public class PostController {
     public PostPageableDTO explorePosts(@PathVariable("currentUserId") User user, @RequestParam(value = "page", defaultValue = "0") int page){
         return postService.explorePosts(user, page);
     }
+
+    @PutMapping("/editPost")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> editPost(@RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("postDTO") String postString) throws IOException {
+        return postService.editPost(image, postString);
+    }
 }
